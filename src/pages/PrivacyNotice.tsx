@@ -20,7 +20,7 @@ const SECTIONS = [
   },
   {
     heading: 'Where it is stored',
-    body: 'Your data is stored on Supabase, a secure cloud database. The exact server region is listed in Phase 10. Supabase uses industry-standard encryption at rest and in transit.',
+    body: 'Your data is stored on Supabase, a secure cloud database hosted in South Africa (Cape Town, af-south-1) or Frankfurt, Germany (eu-central-1). Supabase uses industry-standard encryption at rest and in transit.',
   },
   {
     heading: 'How long we keep it',

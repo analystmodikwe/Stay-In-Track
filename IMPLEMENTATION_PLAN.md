@@ -1350,7 +1350,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-REL-2 | E2E | `tests/e2e/` | The full Playwright suite passes against the deployed URL, connected to a second hosted project `stay-in-track-test`, seeded with `npm run seed` using values from a local `.env.hosted-test` (listed in Section 6 and ignored by `.env*` in `.gitignore`; it is never committed) |
 | T-REL-3 | Integration | `tests/integration/isolation.int.test.ts` | On `stay-in-track-test`, two gyms: each Admin sees only their own gym's Plans, Members and Payments |
 
-- [ ] Tests written and failing before the hosted projects are set up.
+- [x] Tests written and failing before the hosted projects are set up.
 
 **Step 2: Backend (Green)**
 
@@ -1361,14 +1361,14 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 **Step 3: Frontend (Green)**
 
 - [ ] The human connects the GitHub repository to Vercel; hosted `VITE_` values are stored as Vercel environment variables (never in Git).
-- [ ] `npm run build` output deployed; `vercel.json` rewrite makes every route work on refresh.
-- [ ] S11 Privacy Notice names the Supabase region country.
-- [ ] README complete: setup, every command, test accounts, how to run each test level, the demo script.
+- [x] `npm run build` output deployed; `vercel.json` rewrite makes every route work on refresh.
+- [x] S11 Privacy Notice names the Supabase region country.
+- [x] README complete: setup, every command, test accounts, how to run each test level, the demo script.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Fresh clone → `npm install` → `npx supabase start` → reset + seed → `npm run check` all pass.
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Fresh clone → `npm install` → `npx supabase start` → reset + seed → `npm run check` all pass.
 
 **Step 5: Manual checks (human)**
 
@@ -1450,11 +1450,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 - [x] T-EDGE-1: Payment while offline (automated)
 - [x] T-EDGE-2: session expires in M3 (automated)
 - [x] T-EDGE-3: Grace period 3 → 0 (automated)
-- [ ] T-EDGE-4: Member signs up before being added (automated)
+- [x] T-EDGE-4: Member signs up before being added (automated)
 - [x] T-EDGE-5: Payment on 31 Jan → 28 Feb 2027 (automated)
 - [x] T-EDGE-6: Member record deleted while viewing S9 (automated)
 - [x] T-EDGE-7: no Undo on an older Payment (automated)
-- [ ] T-EDGE-8: two Admin browsers, last saved wins (automated)
+- [x] T-EDGE-8: two Admin browsers, last saved wins (automated)
 - [x] T-AUTH-1: password rule (automated)
 - [x] T-AUTH-2: signed out after 30 days (automated)
 - [ ] T-NFR-10: 3-second load on mobile data (manual)
@@ -1493,6 +1493,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 7 | 8 Nov 2026 | Ready for manual check | 266 / 266 (169 vitest unit/comp, 25 vitest int, 10 playwright E2E, 62 pgTAP) | Phase 7: Entrance check and Dashboard (F4, F5) | Rules BR7/BR9, Dashboard API, S6 search and filters, S5 Admin Dashboard with StatCards & Members per Plan |
 | 8 | 8 Nov 2026 | Ready for manual check | 294 / 294 (193 vitest unit/comp, 27 vitest int, 12 playwright E2E, 62 pgTAP) | Phase 8: Member Dashboard and reminders (F6, F7) | Rules BR10, Member API (OP21, OP22), S9 Member Dashboard with NoticeBanners, S10 Payment reminders toggle |
 | 9 | 8 Nov 2026 | Ready for manual check | 348 / 348 (240 vitest unit/comp, 28 vitest int, 16 playwright E2E, 64 pgTAP) | Phase 9: Hardening | NFR tests T-NFR-1 to T-NFR-9, edge tests T-EDGE-1 to T-EDGE-11, E2E flows T-E2E-1 to T-E2E-7 across mobile & desktop, src/lib coverage 95.17%, zero-error lint and tsc |
+| 10 | 8 Nov 2026 | Ready for manual check | 353 / 353 (240 vitest unit/comp, 33 vitest int, 16 playwright E2E, 64 pgTAP) | Phase 10: Release v1.0 | T-REL-3 isolation test, README complete, Privacy Notice updated, vercel.json SPA rewrite, production build 476kB/134kB gzip |
 
 ---
 

@@ -104,8 +104,8 @@ describe('MemberDashboard screen (S9)', () => {
     renderMemberDashboard()
 
     // Header & Gym name
-    expect(await screen.findByRole('heading', { name: /my membership/i })).toBeInTheDocument()
-    expect(screen.getByText('Iron Haven Gym')).toBeInTheDocument()
+    expect(await screen.findByText('Iron Haven Gym')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /my membership/i })).toBeInTheDocument()
 
     // Status badge Active
     expect(screen.getByText('Active')).toBeInTheDocument()
