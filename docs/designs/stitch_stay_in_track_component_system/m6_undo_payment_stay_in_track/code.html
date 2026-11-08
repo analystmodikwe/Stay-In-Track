@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M6 Undo Payment - STAY IN TRACK</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              DEFAULT: '#1F3A5F',
+              hover: '#162b47',
+            },
+            teal: {
+              DEFAULT: '#0F766E',
+              dark: '#0d655f',
+              light: '#f0fdfa',
+              border: '#ccfbf1',
+            },
+            danger: {
+              DEFAULT: '#C62828',
+              hover: '#B71C1C',
+              light: '#FEF2F2',
+              border: '#FEE2E2',
+            },
+            surface: '#F5F7FA',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #E5E9F0;
+    }
+    .phone-mockup {
+      width: 390px;
+      height: 844px;
+      border-radius: 46px;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 0 10px #1E293B, 0 0 0 12px #334155;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-10 flex flex-col items-center justify-start text-slate-800">
+
+  <!-- TOP PREVIEW CONTROLS BAR -->
+  <div class="w-full max-w-[820px] bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-3 pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs font-bold tracking-wider uppercase text-slate-700">Pop-up M6 Undo Payment • Preview Controls</span>
+        <span class="text-xs text-slate-400 font-medium">Phone • 390px</span>
+      </div>
+      <div class="text-xs text-slate-500">
+        Logged in: <strong class="text-slate-700">Admin</strong> • Opens from <strong class="text-slate-700">S7 (Member Details)</strong>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap items-center justify-between gap-2">
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-normal" onclick="setState('normal')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white transition-all">
+          Normal State
+        </button>
+        <button id="btn-loading" onclick="setState('loading')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Loading (Spinner)
+        </button>
+        <button id="btn-offline" onclick="setState('offline')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.828m2.829 2.828L3 3m5.636 5.636a9 9 0 0112.728 0M12 12v.01" />
+          </svg>
+          Offline Banner
+        </button>
+        <button id="btn-success" onclick="simulateSuccess()" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Simulate Undo (Go to S7 + Toast)
+        </button>
+      </div>
+      <div>
+        <button onclick="reopenModal()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all">
+          Re-open Pop-up
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE CONTAINER -->
+  <div class="phone-mockup bg-white relative overflow-hidden flex flex-col select-none">
+    
+    <!-- STATUS BAR -->
+    <div class="h-11 px-7 pt-3 flex justify-between items-center bg-white z-20 shrink-0 text-slate-800">
+      <span class="text-xs font-semibold tracking-tight">09:41</span>
+      <!-- Dynamic Island / Speaker cutout -->
+      <div class="w-24 h-4 bg-slate-900 rounded-full mx-auto -mt-1"></div>
+      <div class="flex items-center space-x-1.5 text-slate-700">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L12 22l7.03-4.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/>
+        </svg>
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4z"/>
+        </svg>
+        <div class="w-5 h-2.5 border border-slate-700 rounded-sm p-0.5 flex items-center">
+          <div class="w-full h-full bg-slate-700 rounded-2xs"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFLINE BANNER (Conditional) -->
+    <div id="offline-banner" class="hidden bg-slate-800 text-slate-100 text-xs px-4 py-2 flex items-center justify-between z-30 transition-all">
+      <div class="flex items-center space-x-2">
+        <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.828m2.829 2.828L3 3m5.636 5.636a9 9 0 0112.728 0M12 12v.01" />
+        </svg>
+        <span>You're offline. Changes will not be saved.</span>
+      </div>
+      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Offline</span>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast-message" class="hidden absolute top-14 left-4 right-4 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center justify-between border border-slate-700 animate-bounce">
+      <div class="flex items-center space-x-2.5">
+        <div class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <span class="text-xs font-semibold text-slate-100" id="toast-text">Payment undone</span>
+      </div>
+      <button onclick="hideToast()" class="text-slate-400 hover:text-white text-xs">Dismiss</button>
+    </div>
+
+    <!-- UNDERLYING SCREEN: S7 MEMBER DETAILS (For realism & context) -->
+    <div class="flex-1 overflow-y-auto bg-surface custom-scrollbar pb-6">
+      
+      <!-- S7 Header Bar -->
+      <div class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-sm font-bold text-primary">Johan van der Merwe</h1>
+            <p class="text-[11px] text-slate-500">Iron Haven Gym • Member #M-042</p>
+          </div>
+        </div>
+        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">Admin</span>
+      </div>
+
+      <!-- S7 Content -->
+      <div class="p-4 space-y-4">
+
+        <!-- Membership Status Card -->
+        <div class="bg-white rounded-xl border border-slate-200 p-3.5 shadow-xs">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Membership Coverage</span>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
+          </div>
+          <div class="flex justify-between items-baseline">
+            <div>
+              <p class="text-xs text-slate-500">Paid until date</p>
+              <p class="text-base font-bold text-primary" id="s7-paid-until">28 Nov 2026</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-slate-500">Plan</p>
+              <p class="text-sm font-semibold text-slate-800">Standard (R350/mo)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment History Section in S7 -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-600">Payment History</h2>
+            <span class="text-[11px] text-slate-400">Showing recent</span>
+          </div>
+
+          <div class="space-y-2">
+            
+            <!-- TARGET PAYMENT TO UNDO (Most recent payment) -->
+            <div class="bg-white rounded-xl border-2 border-red-200 p-3 shadow-xs relative overflow-hidden bg-gradient-to-r from-red-50/30 to-white">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-900">R 350.00</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">Cash</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold">Latest</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Recorded: 28 Oct 2026 • 1 Month Extension</p>
+                  <p class="text-[11px] text-slate-600 font-medium mt-1">Extended to: <span class="font-semibold text-primary">28 Nov 2026</span></p>
+                </div>
+                <button onclick="reopenModal()" class="px-2.5 py-1 text-[11px] font-semibold text-danger border border-danger/30 rounded-lg hover:bg-danger/5 transition-all">
+                  Undo
+                </button>
+              </div>
+            </div>
+
+            <!-- Older Payment -->
+            <div class="bg-white rounded-xl border border-slate-200 p-3 shadow-xs">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center space-x-1.5">
+                    <span class="text-xs font-bold text-slate-800">R 350.00</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 font-medium">EFT</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-0.5">Recorded: 10 Sep 2026 • 1 Month</p>
+                  <p class="text-[11px] text-slate-600 mt-0.5">Extended to: 10 Oct 2026</p>
+                </div>
+                <span class="text-[10px] text-slate-400 font-medium py-1">Archived</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Quick actions footer in S7 -->
+        <div class="pt-2">
+          <button class="w-full py-2.5 text-xs font-semibold text-primary bg-white border border-slate-200 rounded-lg shadow-2xs hover:bg-slate-50">
+            + Record New Payment
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MODAL BACKDROP (DIMMED SCREEN) -->
+    <!-- Tapping outside closes without action as required -->
+    <div id="modal-backdrop" onclick="backdropClick(event)" class="absolute inset-0 bg-slate-900/65 backdrop-blur-[2px] z-40 flex items-center justify-center p-4 transition-all duration-200">
+      
+      <!-- MODAL CARD: M6 UNDO PAYMENT -->
+      <!-- 12px border radius, white, 8px spacing system, 48px buttons -->
+      <div id="modal-card" class="w-full max-w-[342px] bg-white rounded-[12px] shadow-2xl p-5 border border-slate-100 relative animate-in fade-in zoom-in-95 duration-150">
+        
+        <!-- Header with warning icon & Admin tag -->
+        <div class="flex items-start justify-between mb-2">
+          <div class="w-10 h-10 rounded-full bg-red-50 text-danger flex items-center justify-center border border-red-100">
+            <!-- Alert Triangle Icon -->
+            <svg class="w-5 h-5 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+            </svg>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-50 text-danger border border-red-100">
+            Admin
+          </span>
+        </div>
+
+        <!-- Pop-up Title -->
+        <h2 class="text-base font-bold text-slate-900 tracking-tight">
+          Undo this Payment?
+        </h2>
+
+        <!-- Specific payment detail pill for clarity -->
+        <div class="mt-2.5 p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
+          <div>
+            <span class="text-slate-500 block text-[10px] uppercase font-medium">Payment to undo</span>
+            <span class="font-bold text-slate-900">R 350.00</span>
+            <span class="text-slate-500 font-normal ml-1">(Cash • 28 Oct 2026)</span>
+          </div>
+          <span class="text-[11px] font-semibold text-danger bg-red-50 px-2 py-0.5 rounded border border-red-100">-1 Month</span>
+        </div>
+
+        <!-- Required Body Text -->
+        <p class="text-xs text-slate-600 mt-3 leading-relaxed">
+          The paid until date goes back to <strong class="text-slate-900 font-semibold">10 Oct 2026</strong>.
+        </p>
+
+        <!-- Offline warning alert box inside modal if offline -->
+        <div id="modal-offline-alert" class="hidden mt-3 p-2 rounded-lg bg-amber-50 border border-amber-200 flex items-center space-x-2 text-[11px] text-amber-800">
+          <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+          </svg>
+          <span>You're offline. Action is currently disabled.</span>
+        </div>
+
+        <!-- 8px spacing rhythm for buttons -->
+        <div class="mt-5 space-y-2">
+          
+          <!-- Danger Primary Button (48px high, #C62828 with white text) -->
+          <button id="btn-undo-action" onclick="executeUndoPayment()" class="w-full h-12 bg-danger hover:bg-danger-hover active:bg-[#a81c1c] text-white font-semibold text-sm rounded-lg transition-all shadow-xs flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2">
+            <span id="btn-undo-spinner" class="hidden">
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            <span id="btn-undo-text">Undo Payment</span>
+          </button>
+
+          <!-- Secondary Outlined Button (48px high, Cancel) -->
+          <button id="btn-cancel-action" onclick="closeModal()" class="w-full h-12 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold text-sm rounded-lg border border-slate-300 transition-all shadow-2xs flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-300">
+            Cancel
+          </button>
+
+        </div>
+
+        <!-- Helper hint -->
+        <p class="text-[10px] text-center text-slate-400 mt-3">
+          Tapping outside closes without action
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- INTERACTIVE LOGIC SCRIPT -->
+  <script>
+    let currentState = 'normal';
+
+    function setState(state) {
+      currentState = state;
+
+      // Update control buttons
+      const buttons = {
+        'normal': document.getElementById('btn-normal'),
+        'loading': document.getElementById('btn-loading'),
+        'offline': document.getElementById('btn-offline'),
+      };
+
+      Object.keys(buttons).forEach(k => {
+        if (k === state) {
+          buttons[k].className = 'px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white transition-all';
+        } else {
+          buttons[k].className = 'px-3.5 py-1.5 rounded-lg text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all flex items-center gap-1.5';
+        }
+      });
+
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const undoBtn = document.getElementById('btn-undo-action');
+      const undoSpinner = document.getElementById('btn-undo-spinner');
+      const undoText = document.getElementById('btn-undo-text');
+      const cancelBtn = document.getElementById('btn-cancel-action');
+      const offlineBanner = document.getElementById('offline-banner');
+      const modalOfflineAlert = document.getElementById('modal-offline-alert');
+
+      // Make sure modal is visible
+      modalBackdrop.classList.remove('hidden');
+
+      if (state === 'normal') {
+        offlineBanner.classList.add('hidden');
+        modalOfflineAlert.classList.add('hidden');
+        undoBtn.disabled = false;
+        cancelBtn.disabled = false;
+        undoBtn.className = 'w-full h-12 bg-danger hover:bg-danger-hover active:bg-[#a81c1c] text-white font-semibold text-sm rounded-lg transition-all shadow-xs flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2';
+        undoSpinner.classList.add('hidden');
+        undoText.textContent = 'Undo Payment';
+      } 
+      else if (state === 'loading') {
+        offlineBanner.classList.add('hidden');
+        modalOfflineAlert.classList.add('hidden');
+        undoBtn.disabled = true;
+        cancelBtn.disabled = true;
+        undoBtn.className = 'w-full h-12 bg-danger/80 cursor-wait text-white font-semibold text-sm rounded-lg transition-all shadow-xs flex items-center justify-center space-x-2';
+        undoSpinner.classList.remove('hidden');
+        undoText.textContent = 'Undoing payment...';
+      } 
+      else if (state === 'offline') {
+        offlineBanner.classList.remove('hidden');
+        modalOfflineAlert.classList.remove('hidden');
+        undoBtn.disabled = true;
+        cancelBtn.disabled = false;
+        undoBtn.className = 'w-full h-12 bg-slate-300 text-slate-500 cursor-not-allowed font-semibold text-sm rounded-lg transition-all shadow-none flex items-center justify-center space-x-2';
+        undoSpinner.classList.add('hidden');
+        undoText.textContent = 'Undo Payment';
+      }
+    }
+
+    function backdropClick(e) {
+      // Tapping outside closes without action
+      if (e.target === document.getElementById('modal-backdrop')) {
+        closeModal();
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal-backdrop').classList.add('hidden');
+    }
+
+    function reopenModal() {
+      document.getElementById('modal-backdrop').classList.remove('hidden');
+      setState(currentState);
+    }
+
+    function executeUndoPayment() {
+      if (currentState === 'offline') return;
+      setState('loading');
+      setTimeout(() => {
+        simulateSuccess();
+      }, 700);
+    }
+
+    function simulateSuccess() {
+      // Close modal
+      closeModal();
+      
+      // Update S7 paid until date to 10 Oct 2026
+      const s7Date = document.getElementById('s7-paid-until');
+      s7Date.textContent = '10 Oct 2026';
+      s7Date.classList.add('text-amber-600');
+
+      // Show toast
+      showToast('Payment undone');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-message');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = msg;
+      toast.classList.remove('hidden');
+
+      setTimeout(() => {
+        hideToast();
+      }, 3500);
+    }
+
+    function hideToast() {
+      document.getElementById('toast-message').classList.add('hidden');
+    }
+
+    // Default initialization
+    setState('normal');
+  </script>
+</body>
+</html>

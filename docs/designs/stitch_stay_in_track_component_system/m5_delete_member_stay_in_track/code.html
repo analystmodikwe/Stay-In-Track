@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M5 Delete Member - STAY IN TRACK</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#1F3A5F',
+              teal: '#0F766E',
+              'teal-light': '#F0FDFA',
+              bg: '#F5F7FA',
+              danger: '#C62828',
+              'danger-hover': '#B71C1C',
+              'danger-light': '#FEF2F2',
+              border: '#E2E8F0',
+              text: '#1E293B',
+              muted: '#64748B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      background-color: #EBF0F5;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin 0.8s linear infinite;
+    }
+    .card-shadow {
+      box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.25), 0 8px 10px -6px rgba(15, 23, 42, 0.2);
+    }
+    .backdrop-fade {
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+    .popup-bounce {
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-800 flex flex-col items-center justify-start py-6 px-3 sm:px-6">
+
+  <!-- TOP PREVIEW CONTROLS & STATE SWITCHER -->
+  <header class="w-full max-w-[760px] bg-white rounded-2xl shadow-sm border border-slate-200/80 p-4 mb-6 transition-all" role="region" aria-label="Preview Controls">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          POP-UP M5 DELETE MEMBER • PREVIEW CONTROLS
+        </span>
+        <span class="text-xs text-slate-500 font-medium hidden sm:inline">Phone • 390px</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-600">
+        <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-medium">Logged in: Admin</span>
+        <span>• Opens from <strong class="text-slate-800 font-semibold">S7 (Member Details)</strong></span>
+      </div>
+    </div>
+
+    <!-- State Buttons -->
+    <div class="flex flex-wrap items-center justify-between gap-2.5">
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-normal" onclick="setState('normal')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-sm bg-slate-900 text-white border border-slate-900">
+          Normal State
+        </button>
+        <button id="btn-loading" onclick="setState('loading')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-all">
+          <span class="inline-flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+            Loading (Spinner)
+          </span>
+        </button>
+        <button id="btn-offline" onclick="setState('offline')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-all">
+          <span class="inline-flex items-center gap-1.5">
+            <i data-lucide="wifi-off" class="w-3.5 h-3.5 text-amber-600"></i>
+            Offline Banner
+          </span>
+        </button>
+        <button id="btn-success" onclick="setState('success')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 transition-all">
+          <span class="inline-flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i>
+            Simulate Delete (Go to S6 + Toast)
+          </span>
+        </button>
+      </div>
+
+      <button id="btn-reopen" onclick="openPopup()" class="text-xs font-medium text-brand-navy hover:text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-slate-300 bg-slate-50 transition-all">
+        Re-open Pop-up
+      </button>
+    </div>
+  </header>
+
+  <!-- PHONE MOCKUP CONTAINER (390px wide standard mobile viewport) -->
+  <main class="relative w-[390px] h-[844px] bg-[#F5F7FA] rounded-[48px] shadow-2xl border-[8px] border-slate-900 overflow-hidden flex flex-col select-none">
+    
+    <!-- iPhone Speaker notch / Dynamic Island -->
+    <div class="absolute top-2.5 left-1/2 -translate-x-1/2 w-28 h-6 bg-slate-900 rounded-full z-50 pointer-events-none flex items-center justify-end pr-2">
+      <div class="w-2.5 h-2.5 rounded-full bg-slate-800 border border-slate-700"></div>
+    </div>
+
+    <!-- Status Bar (09:41) -->
+    <div class="pt-3 px-7 pb-1 flex items-center justify-between text-xs font-semibold text-slate-900 z-30 shrink-0">
+      <span class="tracking-tight">09:41</span>
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="signal" class="w-3.5 h-3.5 text-slate-800"></i>
+        <i data-lucide="wifi" class="w-3.5 h-3.5 text-slate-800"></i>
+        <div class="w-5 h-2.5 border border-slate-800 rounded-sm p-0.5 flex items-center">
+          <div class="w-full h-full bg-slate-800 rounded-[1px]"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OFFLINE STICKY BANNER (Hidden in normal, shown in offline state) -->
+    <div id="phone-offline-banner" class="hidden bg-slate-700 text-white px-4 py-2 text-xs font-medium flex items-center justify-center gap-2 z-40 transition-all border-b border-slate-600 shrink-0 shadow-sm">
+      <i data-lucide="wifi-off" class="w-3.5 h-3.5 text-amber-300"></i>
+      <span>You're offline. Changes will not be saved.</span>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- VIEW A: UNDERLYING S7 SCREEN (MEMBER DETAILS) - Active background -->
+    <!-- ================================================================= -->
+    <div id="underlying-s7-view" class="flex-1 flex flex-col overflow-y-auto custom-scroll relative">
+      
+      <!-- Top App Bar -->
+      <div class="px-4 py-3 flex items-center justify-between border-b border-slate-200/80 bg-white/90 backdrop-blur shrink-0">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:bg-slate-100 cursor-pointer">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-bold text-brand-navy leading-tight">Thando Mokoena</h1>
+            <p class="text-[11px] text-slate-500 font-medium">Iron Haven Gym • Member</p>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-teal bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+          <i data-lucide="shield" class="w-3 h-3"></i>
+          ADMIN
+        </span>
+      </div>
+
+      <!-- S7 Main Content Cards -->
+      <div class="p-4 space-y-3">
+        <!-- Status Card -->
+        <div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <span class="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 mb-1">
+              <i data-lucide="clock" class="w-3 h-3"></i> Grace period
+            </span>
+            <p class="text-[11px] text-slate-500 mt-1">7-day grace period active</p>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] uppercase font-semibold text-slate-400 block tracking-wider">COVERAGE</span>
+            <span class="text-xs font-bold text-slate-800">Paid until 26 Oct 2026</span>
+          </div>
+        </div>
+
+        <!-- Membership Info Card -->
+        <div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <span class="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">MEMBERSHIP INFO</span>
+            <span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Active Contract</span>
+          </div>
+          <div class="flex justify-between items-baseline pt-1">
+            <div>
+              <p class="text-xs text-slate-500 font-medium">Plan</p>
+              <p class="text-sm font-bold text-brand-navy">Standard</p>
+            </div>
+            <div class="text-right">
+              <p class="text-xs text-slate-500 font-medium">Monthly Fee</p>
+              <p class="text-sm font-bold text-slate-900">R350.00 <span class="text-[11px] font-normal text-slate-400">/ mo</span></p>
+            </div>
+          </div>
+          <div class="pt-1 text-xs text-slate-600 space-y-1">
+            <div class="flex items-center gap-2">
+              <i data-lucide="mail" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>thando.m@example.com</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i data-lucide="phone" class="w-3.5 h-3.5 text-slate-400"></i>
+              <span>+27 82 555 0147</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons on S7 -->
+        <div class="space-y-2 pt-1">
+          <button class="w-full h-12 bg-brand-navy text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 shadow-sm pointer-events-none opacity-90">
+            <i data-lucide="credit-card" class="w-4 h-4"></i>
+            Record payment
+          </button>
+          <button class="w-full h-12 bg-white border border-slate-300 text-slate-700 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 pointer-events-none">
+            <i data-lucide="edit-3" class="w-4 h-4"></i>
+            Edit member
+          </button>
+        </div>
+
+        <!-- Payment History Preview -->
+        <div class="bg-white rounded-xl p-3.5 border border-slate-200 shadow-sm space-y-2">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+            <span class="text-[11px] font-semibold uppercase text-slate-400 tracking-wider">PAYMENT HISTORY</span>
+            <span class="text-xs text-slate-500">1 record</span>
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <div>
+              <p class="text-xs font-semibold text-slate-800">26 Sep 2026</p>
+              <p class="text-[11px] text-slate-400">Cash • 1 month</p>
+            </div>
+            <span class="text-xs font-bold text-slate-900">R350.00</span>
+          </div>
+        </div>
+
+        <!-- Danger trigger button on S7 that triggers M5 -->
+        <div class="pt-2 pb-6">
+          <button onclick="openPopup()" class="w-full h-12 bg-red-50 border border-red-200 text-red-600 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 hover:bg-red-100 transition-colors">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+            Delete member
+          </button>
+          <p class="text-[11px] text-slate-400 text-center mt-1.5">Opens confirmation pop-up (M5) • Action logged</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- VIEW B: S6 MEMBERS LIST (Shown upon successful deletion transition) -->
+    <!-- ================================================================= -->
+    <div id="underlying-s6-view" class="hidden flex-1 flex flex-col overflow-y-auto custom-scroll relative bg-[#F5F7FA]">
+      
+      <!-- S6 Header -->
+      <div class="px-4 py-3 bg-white border-b border-slate-200 flex items-center justify-between shrink-0">
+        <div>
+          <h1 class="text-base font-bold text-brand-navy">Members</h1>
+          <p class="text-[11px] text-slate-500">Iron Haven Gym • 4 Active</p>
+        </div>
+        <button class="h-9 px-3 bg-brand-navy text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          Add member
+        </button>
+      </div>
+
+      <!-- S6 List Items -->
+      <div class="p-4 space-y-2.5">
+        <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-bold text-slate-900">Johan van der Merwe</p>
+            <p class="text-xs text-slate-500">Standard • Paid until 28 Nov 2026</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Active</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-bold text-slate-900">Lerato Molefe</p>
+            <p class="text-xs text-slate-500">Premium • Paid until 15 Dec 2026</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Active</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-bold text-slate-900">David Smith</p>
+            <p class="text-xs text-slate-500">Student • Paid until 05 Nov 2026</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Active</span>
+        </div>
+        <div class="p-3 bg-white rounded-xl border border-slate-200 shadow-sm flex items-center justify-between">
+          <div>
+            <p class="text-sm font-bold text-slate-900">Amina Patel</p>
+            <p class="text-xs text-slate-500">Standard • Paid until 02 Nov 2026</p>
+          </div>
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">Active</span>
+        </div>
+
+        <div class="pt-4 text-center">
+          <p class="text-xs text-slate-400">Notice: Thando Mokoena has been removed</p>
+          <button onclick="restoreS7()" class="mt-2 text-xs font-semibold text-brand-navy underline hover:text-slate-900">
+            Return to Thando Mokoena (S7)
+          </button>
+        </div>
+      </div>
+
+      <!-- S6 Bottom Tab Bar -->
+      <nav class="mt-auto bg-white border-t border-slate-200 px-6 py-2 flex items-center justify-between text-[10px] text-slate-400 font-medium shrink-0">
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+          <span>Dashboard</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 text-brand-teal font-semibold">
+          <i data-lucide="users" class="w-5 h-5"></i>
+          <span>Members</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="tag" class="w-5 h-5"></i>
+          <span>Plans</span>
+        </div>
+        <div class="flex flex-col items-center gap-1">
+          <i data-lucide="settings" class="w-5 h-5"></i>
+          <span>Settings</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- SUCCESS TOAST (Floats inside mobile frame upon delete action)     -->
+    <!-- ================================================================= -->
+    <aside id="toast-notification" class="absolute top-14 left-4 right-4 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center justify-between gap-3 z-50 transition-all duration-300 translate-y-[-120%] opacity-0 pointer-events-none" role="alert" aria-live="polite">
+      <div class="flex items-center gap-2.5">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+        </div>
+        <span class="text-xs font-semibold tracking-wide">Member deleted</span>
+      </div>
+      <span class="text-[10px] text-slate-400 font-medium">Redirected to S6</span>
+    </aside>
+
+    <!-- ================================================================= -->
+    <!-- M5 POP-UP MODAL OVERLAY (DIMMED SCREEN)                           -->
+    <!-- Requirement: Tapping outside closes it without action             -->
+    <!-- ================================================================= -->
+    <div id="modal-overlay" class="absolute inset-0 z-40 flex items-center justify-center p-4 backdrop-fade bg-slate-950/65 backdrop-blur-[2px]" onclick="handleBackdropClick(event)">
+      
+      <!-- POP-UP DIALOG (White, 12px radius, 8px spacing system) -->
+      <div id="popup-card" class="w-full max-w-[342px] bg-white rounded-[12px] p-5 card-shadow popup-bounce space-y-4 relative select-auto" onclick="event.stopPropagation()">
+        
+        <!-- Header row: Warning Badge + Admin Pill -->
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center shrink-0 border border-red-100">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 id="modal-title" class="text-base font-bold text-slate-900 tracking-tight leading-snug">
+                Delete this Member?
+              </h2>
+              <p class="text-xs text-slate-500 font-medium">Permanent member action</p>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-red-50 text-red-700 border border-red-200 shrink-0">
+            ADMIN
+          </span>
+        </div>
+
+        <!-- Target Member Pill for clear clarity -->
+        <div class="bg-slate-50 border border-slate-100 rounded-lg p-2.5 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-full bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center">
+              TM
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-slate-800 leading-tight">Thando Mokoena</p>
+              <p class="text-[11px] text-slate-400">Standard Plan • 1 Payment record</p>
+            </div>
+          </div>
+          <span class="text-[10px] font-medium text-slate-400">ID: #M-084</span>
+        </div>
+
+        <!-- Primary Warning Copy verbatim from specification -->
+        <div class="space-y-1">
+          <p id="modal-body-text" class="text-xs text-slate-600 leading-relaxed">
+            This permanently deletes the Member and all their Payments. Revenue totals will change.
+          </p>
+          <p id="offline-inline-warning" class="hidden text-[11px] text-amber-700 font-medium bg-amber-50 border border-amber-200 rounded p-1.5 mt-2 flex items-center gap-1.5">
+            <i data-lucide="wifi-off" class="w-3.5 h-3.5 shrink-0 text-amber-600"></i>
+            <span>Action disabled while offline. Reconnect to proceed.</span>
+          </p>
+        </div>
+
+        <!-- Buttons: 8px vertical spacing rhythm, 48px standard touch targets -->
+        <div class="space-y-2 pt-1">
+          <!-- Primary Danger Button: #C62828 with white text, 48px height -->
+          <button id="btn-delete-action" onclick="performDelete()" class="w-full h-12 bg-[#C62828] hover:bg-[#B71C1C] active:bg-[#991B1B] text-white rounded-lg font-semibold text-sm flex items-center justify-center gap-2 shadow-sm transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <span id="btn-delete-spinner" class="hidden">
+              <svg class="animate-spin-custom h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            <span id="btn-delete-label">Delete</span>
+          </button>
+
+          <!-- Secondary Outlined Button: 48px height -->
+          <button id="btn-cancel-action" onclick="closePopup()" class="w-full h-12 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg font-semibold text-sm flex items-center justify-center transition-colors">
+            Cancel
+          </button>
+        </div>
+
+        <!-- Dismiss note -->
+        <p class="text-[11px] text-slate-400 text-center pt-0.5">
+          Tapping outside closes without action
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Home Indicator line at bottom -->
+    <div class="pb-2 pt-1 flex justify-center shrink-0 z-50 pointer-events-none">
+      <div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+    </div>
+
+  </main>
+
+  <!-- Interactive script to handle all required preview states -->
+  <script>
+    // State Tracker
+    let currentState = 'normal'; // 'normal' | 'loading' | 'offline' | 'success'
+
+    // DOM Elements
+    const modalOverlay = document.getElementById('modal-overlay');
+    const popupCard = document.getElementById('popup-card');
+    const phoneOfflineBanner = document.getElementById('phone-offline-banner');
+    const offlineInlineWarning = document.getElementById('offline-inline-warning');
+    const btnDelete = document.getElementById('btn-delete-action');
+    const btnDeleteLabel = document.getElementById('btn-delete-label');
+    const btnDeleteSpinner = document.getElementById('btn-delete-spinner');
+    const btnCancel = document.getElementById('btn-cancel-action');
+    const underlyingS7 = document.getElementById('underlying-s7-view');
+    const underlyingS6 = document.getElementById('underlying-s6-view');
+    const toast = document.getElementById('toast-notification');
+
+    // State preview control buttons
+    const btnNormal = document.getElementById('btn-normal');
+    const btnLoading = document.getElementById('btn-loading');
+    const btnOffline = document.getElementById('btn-offline');
+    const btnSuccess = document.getElementById('btn-success');
+
+    function updatePreviewButtons(activeKey) {
+      const activeClass = 'bg-slate-900 text-white border-slate-900 font-semibold';
+      const inactiveClass = 'bg-white text-slate-700 border-slate-200 font-medium hover:bg-slate-50';
+
+      [btnNormal, btnLoading, btnOffline, btnSuccess].forEach(btn => {
+        btn.className = btn.className.replace(activeClass, '').replace(inactiveClass, '');
+      });
+
+      if (activeKey === 'normal') {
+        btnNormal.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-sm ' + activeClass;
+        btnLoading.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnOffline.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnSuccess.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100';
+      } else if (activeKey === 'loading') {
+        btnLoading.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-sm ' + activeClass;
+        btnNormal.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnOffline.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnSuccess.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100';
+      } else if (activeKey === 'offline') {
+        btnOffline.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-sm ' + activeClass;
+        btnNormal.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnLoading.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnSuccess.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all text-emerald-700 bg-emerald-50 border border-emerald-200 hover:bg-emerald-100';
+      } else if (activeKey === 'success') {
+        btnSuccess.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-sm bg-emerald-700 text-white border-emerald-700 font-semibold';
+        btnNormal.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnLoading.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+        btnOffline.className = 'px-3.5 py-1.5 rounded-lg text-xs transition-all ' + inactiveClass;
+      }
+    }
+
+    function setState(state) {
+      currentState = state;
+      updatePreviewButtons(state);
+
+      if (state === 'normal') {
+        // Show dialog over S7
+        restoreS7();
+        openPopup();
+        phoneOfflineBanner.classList.add('hidden');
+        offlineInlineWarning.classList.add('hidden');
+        btnDelete.disabled = false;
+        btnDeleteSpinner.classList.add('hidden');
+        btnDeleteLabel.textContent = 'Delete';
+        btnCancel.disabled = false;
+      } 
+      else if (state === 'loading') {
+        restoreS7();
+        openPopup();
+        phoneOfflineBanner.classList.add('hidden');
+        offlineInlineWarning.classList.add('hidden');
+        btnDelete.disabled = true;
+        btnDeleteSpinner.classList.remove('hidden');
+        btnDeleteLabel.textContent = 'Deleting member...';
+        btnCancel.disabled = true;
+      } 
+      else if (state === 'offline') {
+        restoreS7();
+        openPopup();
+        phoneOfflineBanner.classList.remove('hidden');
+        offlineInlineWarning.classList.remove('hidden');
+        btnDelete.disabled = true;
+        btnDeleteSpinner.classList.add('hidden');
+        btnDeleteLabel.textContent = 'Delete';
+        btnCancel.disabled = false;
+      } 
+      else if (state === 'success') {
+        triggerSuccessRedirect();
+      }
+    }
+
+    function openPopup() {
+      modalOverlay.classList.remove('hidden');
+      modalOverlay.classList.remove('opacity-0');
+      popupCard.classList.remove('scale-95');
+    }
+
+    function closePopup() {
+      modalOverlay.classList.add('opacity-0');
+      popupCard.classList.add('scale-95');
+      setTimeout(() => {
+        modalOverlay.classList.add('hidden');
+      }, 150);
+    }
+
+    function handleBackdropClick(event) {
+      // Tap outside closes it without action
+      if (event.target === modalOverlay) {
+        closePopup();
+      }
+    }
+
+    function performDelete() {
+      if (currentState === 'offline') return;
+      
+      // Simulate loading then success
+      setState('loading');
+      setTimeout(() => {
+        setState('success');
+      }, 700);
+    }
+
+    function triggerSuccessRedirect() {
+      // Hide modal
+      modalOverlay.classList.add('hidden');
+      // Switch view from S7 (Member Details) to S6 (Members list)
+      underlyingS7.classList.add('hidden');
+      underlyingS6.classList.remove('hidden');
+
+      // Show toast "Member deleted"
+      toast.classList.remove('translate-y-[-120%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-[-120%]', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    function restoreS7() {
+      underlyingS6.classList.add('hidden');
+      underlyingS7.classList.remove('hidden');
+      toast.classList.add('translate-y-[-120%]', 'opacity-0');
+    }
+
+    // Initialize lucide icons
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

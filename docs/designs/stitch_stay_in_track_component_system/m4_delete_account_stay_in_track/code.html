@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M4 Delete Account - STAY IN TRACK</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#1F3A5F',
+              teal: '#0F766E',
+              bg: '#F5F7FA',
+              danger: '#C62828',
+              dangerDark: '#B71C1C',
+              dangerBg: '#FEE2E2',
+              dangerBorder: '#FCA5A5',
+              graySub: '#64748B',
+              grayBorder: '#E2E8F0',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #E2E8F0;
+      margin: 0;
+      padding: 24px;
+      color: #0F172A;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* Device frame wrapper */
+    .device-viewport {
+      width: 390px;
+      height: 844px;
+      position: relative;
+      background-color: #F5F7FA;
+      border-radius: 44px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 0 10px #1E293B, 0 0 0 12px #334155;
+    }
+
+    /* Dimmed overlay backdrop */
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 40;
+      transition: opacity 0.25s ease, backdrop-filter 0.25s ease;
+    }
+
+    .modal-dialog {
+      background: #FFFFFF;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.25), 0 8px 16px -4px rgba(0, 0, 0, 0.1);
+      position: relative;
+      animation: dialogPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes dialogPop {
+      0% { opacity: 0; transform: scale(0.95) translateY(8px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Toast animation */
+    .toast-anim {
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translateY(-16px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="p-4 sm:p-6 lg:p-8 flex flex-col items-center justify-start">
+
+  <!-- TOP PREVIEW CONTROLLER -->
+  <header class="w-full max-w-4xl bg-white rounded-2xl p-4 sm:p-5 mb-6 shadow-sm border border-slate-200">
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <h1 class="text-sm font-semibold text-slate-800 tracking-wide uppercase">Pop-up M4 Delete Account • Preview Controls</h1>
+      </div>
+      <div class="text-xs text-slate-500 flex items-center gap-2">
+        <span class="px-2 py-0.5 rounded bg-slate-100 font-medium text-slate-700">Phone • 390px</span>
+        <span>Opened from <strong>S10 (Settings)</strong></span>
+      </div>
+    </div>
+
+    <!-- Controls Row -->
+    <div class="pt-3 flex flex-wrap gap-2 items-center">
+      <!-- Variant Role Switcher -->
+      <div class="flex items-center bg-slate-100 p-1 rounded-lg mr-2">
+        <button id="btn-role-admin" onclick="setRole('admin')" class="px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-[#1F3A5F] text-white shadow-sm">
+          Admin Variant
+        </button>
+        <button id="btn-role-member" onclick="setRole('member')" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all text-slate-600 hover:text-slate-900">
+          Member Variant
+        </button>
+      </div>
+
+      <!-- State Buttons -->
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+
+      <button id="state-normal" onclick="setState('normal')" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-50 transition-all font-semibold shadow-xs">
+        Normal State
+      </button>
+
+      <button id="state-loading" onclick="setState('loading')" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-all">
+        Loading (Spinner)
+      </button>
+
+      <button id="state-offline" onclick="setState('offline')" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 transition-all flex items-center gap-1.5">
+        <i data-lucide="wifi-off" class="w-3.5 h-3.5 text-amber-600"></i>
+        Offline Banner
+      </button>
+
+      <button id="state-success" onclick="setState('success')" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-emerald-300 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 transition-all flex items-center gap-1.5">
+        <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i>
+        Success (Redirect S1 + Toast)
+      </button>
+
+      <button onclick="toggleModal()" id="btn-toggle-modal" class="ml-auto px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-white text-slate-600 hover:text-slate-900">
+        Re-open Pop-up
+      </button>
+    </div>
+  </header>
+
+  <!-- PHONE CONTAINER (390px x 844px) -->
+  <main class="device-viewport flex flex-col select-none">
+
+    <!-- STATUS BAR (iOS style) -->
+    <div class="h-11 px-6 flex justify-between items-center text-xs font-semibold text-slate-900 z-30 shrink-0">
+      <span>09:41</span>
+      <div class="w-24 h-5 bg-black rounded-full mx-auto -mt-1"></div>
+      <div class="flex items-center gap-1.5">
+        <i data-lucide="signal" class="w-3.5 h-3.5"></i>
+        <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+        <i data-lucide="battery-charging" class="w-4 h-4"></i>
+      </div>
+    </div>
+
+    <!-- OFFLINE BANNER (Shown when state == offline) -->
+    <div id="offline-banner" class="hidden bg-slate-800 text-white text-xs px-4 py-2 flex items-center justify-between z-30 transition-all shrink-0">
+      <div class="flex items-center gap-2 font-medium">
+        <i data-lucide="wifi-off" class="w-3.5 h-3.5 text-slate-300"></i>
+        <span>You're offline. Changes will not be saved.</span>
+      </div>
+      <span class="text-[10px] uppercase font-bold tracking-wider text-slate-400">Read only</span>
+    </div>
+
+    <!-- UNDERLYING SCREEN: S10 Settings (or S1 Welcome if success state) -->
+    <div id="screen-underlying" class="flex-1 overflow-y-auto px-4 pb-20 relative bg-[#F5F7FA]">
+
+      <!-- S10 HEADER -->
+      <div class="pt-2 pb-3">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-[#1F3A5F] tracking-tight">Settings</h2>
+            <p id="s10-subtitle" class="text-xs text-slate-500 font-medium">Iron Haven Gym • System Preferences</p>
+          </div>
+          <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <i data-lucide="shield-check" class="w-3 h-3 text-emerald-600"></i>
+            STAY IN TRACK
+          </span>
+        </div>
+      </div>
+
+      <!-- S10 CONTENT MOCK (Behind dimmed overlay) -->
+      <div class="space-y-4">
+        <!-- Account Card -->
+        <div class="bg-white rounded-xl p-4 border border-slate-200/80 shadow-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+            <span class="text-xs font-bold text-slate-400 tracking-wider uppercase">Account</span>
+            <span id="underlying-role-pill" class="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">Admin Account</span>
+          </div>
+          <div class="pt-2.5">
+            <p id="underlying-name" class="text-sm font-semibold text-slate-900">Sipho Dlamini</p>
+            <p id="underlying-email" class="text-xs text-slate-500 mt-0.5">sipho@ironhaven.example.com <span class="text-[10px] text-slate-400">(Read-only)</span></p>
+          </div>
+        </div>
+
+        <!-- Role Setting Card Mock -->
+        <div class="bg-white rounded-xl p-4 border border-slate-200/80 shadow-xs">
+          <p class="text-xs font-bold text-slate-400 tracking-wider uppercase pb-2">Gym Rules</p>
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-xs font-medium text-slate-700">Grace period</span>
+            <span class="text-xs font-bold text-[#1F3A5F] px-2 py-1 bg-slate-100 rounded">3 days</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="bg-white rounded-xl p-3 border border-slate-200/80 shadow-xs space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-700 py-1">
+            <span class="flex items-center gap-2"><i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-400"></i> Privacy Notice</span>
+            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+          </div>
+        </div>
+
+        <!-- Danger Zone Button (Triggered M4) -->
+        <div class="pt-2">
+          <button class="w-full h-12 rounded-xl bg-red-50 text-[#C62828] border border-red-200 text-sm font-semibold flex items-center justify-center gap-2">
+            <i data-lucide="trash-2" class="w-4 h-4 text-[#C62828]"></i>
+            Delete account
+          </button>
+          <p class="text-[11px] text-center text-slate-400 mt-1">Opens confirmation dialog (M4) • Irreversible</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNDERLYING FIXED BOTTOM TAB BAR (Admin: 4 tabs) -->
+    <div id="s10-tab-bar" class="absolute bottom-0 inset-x-0 bg-white border-t border-slate-200 h-16 flex items-center justify-around px-2 z-20">
+      <div class="flex flex-col items-center gap-0.5 text-slate-400">
+        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+        <span class="text-[10px] font-medium">Dashboard</span>
+      </div>
+      <div class="flex flex-col items-center gap-0.5 text-slate-400">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span class="text-[10px] font-medium">Members</span>
+      </div>
+      <div class="flex flex-col items-center gap-0.5 text-slate-400">
+        <i data-lucide="credit-card" class="w-4 h-4"></i>
+        <span class="text-[10px] font-medium">Plans</span>
+      </div>
+      <div class="flex flex-col items-center gap-0.5 text-[#1F3A5F]">
+        <i data-lucide="settings" class="w-4 h-4"></i>
+        <span class="text-[10px] font-bold">Settings</span>
+        <span class="w-1 h-1 rounded-full bg-[#1F3A5F] -mt-0.5"></span>
+      </div>
+    </div>
+
+    <!-- S1 WELCOME SCREEN SIMULATION (Revealed on Success redirect) -->
+    <div id="screen-s1" class="hidden absolute inset-0 bg-[#F5F7FA] z-50 flex flex-col justify-between p-6 pt-16">
+      <!-- TOAST NOTIFICATION: "Account deleted" -->
+      <div id="success-toast" class="absolute top-12 left-4 right-4 bg-slate-900 text-white rounded-xl px-4 py-3 shadow-lg flex items-center gap-3 toast-anim border border-slate-700">
+        <div class="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <i data-lucide="check" class="w-4 h-4 stroke-[3]"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs font-semibold text-white">Account deleted</p>
+          <p class="text-[11px] text-slate-300">You have been logged out and returned to Welcome.</p>
+        </div>
+        <button onclick="dismissToast()" class="text-slate-400 hover:text-white p-1">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+
+      <div class="flex flex-col items-center text-center mt-12">
+        <div class="w-14 h-14 rounded-2xl bg-[#1F3A5F] text-white flex items-center justify-center shadow-md mb-4">
+          <i data-lucide="shield" class="w-7 h-7 text-emerald-400"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-[#1F3A5F] tracking-tight">STAY IN TRACK</h2>
+        <p class="text-xs text-slate-500 mt-1 max-w-[240px]">Iron Haven Gym membership and payment tracking made effortless.</p>
+      </div>
+
+      <div class="w-full space-y-3 pb-8">
+        <button onclick="resetFromS1()" class="w-full h-12 bg-[#1F3A5F] text-white font-semibold rounded-xl text-sm shadow-md hover:bg-[#162a45] transition-all">
+          Log in
+        </button>
+        <button onclick="resetFromS1()" class="w-full h-12 bg-white text-[#1F3A5F] font-semibold rounded-xl text-sm border border-slate-300 hover:bg-slate-50 transition-all">
+          Sign up
+        </button>
+        <p class="text-center text-[11px] text-slate-400 pt-2">Screen S1 • Welcome Screen</p>
+      </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL M4 OVERLAY (Dimmed Screen Backdrop) -->
+    <!-- Tapping outside dialog (the overlay) closes it without action -->
+    <!-- ============================================================ -->
+    <div id="modal-overlay" onclick="onBackdropClick(event)" class="modal-overlay">
+
+      <!-- CONFIRMATION POP-UP (White, 12px radius, 8px spacing system) -->
+      <div id="modal-dialog" onclick="event.stopPropagation()" class="modal-dialog p-5 border border-slate-100 flex flex-col text-left">
+
+        <!-- Top Header & Danger Emblem -->
+        <div class="flex items-start gap-3.5 pb-2">
+          <div class="w-10 h-10 rounded-full bg-red-50 border border-red-100 flex items-center justify-center shrink-0 text-[#C62828] mt-0.5">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-[#C62828] stroke-[2.2]"></i>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center justify-between">
+              <h3 class="text-base font-bold text-slate-900 tracking-tight leading-snug">
+                Delete your account?
+              </h3>
+              <!-- Optional role badge inside dialog for testing clarity -->
+              <span id="dialog-role-tag" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-100 text-[#C62828]">
+                Admin
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium mt-0.5">Permanent account action</p>
+          </div>
+        </div>
+
+        <!-- Explanatory Warning Text Body -->
+        <div class="py-2.5">
+          <p id="dialog-body-text" class="text-xs leading-relaxed text-slate-600 font-normal">
+            This permanently deletes your gym, all Plans, Members and Payments. This cannot be undone.
+          </p>
+        </div>
+
+        <!-- Offline notice inside modal when in offline state -->
+        <div id="dialog-offline-note" class="hidden mb-3 p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-[11px] flex items-center gap-2">
+          <i data-lucide="wifi-off" class="w-4 h-4 text-amber-700 shrink-0"></i>
+          <span class="leading-tight font-medium">You're offline. Account deletion is disabled until reconnected.</span>
+        </div>
+
+        <!-- Action Buttons (Stacked, 48px height, 8px vertical spacing) -->
+        <div class="pt-2 flex flex-col gap-2">
+          <!-- Primary Danger Button: #C62828 with white text, 48px target -->
+          <button
+            id="btn-delete"
+            type="button"
+            onclick="handleDeleteAction()"
+            class="w-full h-12 rounded-xl bg-[#C62828] hover:bg-[#B71C1C] active:bg-[#991B1B] text-white font-semibold text-sm transition-all shadow-sm flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-[#C62828] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#C62828]">
+            <span id="btn-delete-spinner" class="hidden">
+              <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+            </span>
+            <span id="btn-delete-label">Delete</span>
+          </button>
+
+          <!-- Secondary Outlined Button: "Cancel", 48px target -->
+          <button
+            id="btn-cancel"
+            type="button"
+            onclick="handleCancelAction()"
+            class="w-full h-12 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold text-sm transition-all flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2">
+            Cancel
+          </button>
+        </div>
+
+        <!-- Dim Tap Hint -->
+        <div class="mt-3 text-center">
+          <p class="text-[10px] text-slate-400">Tapping outside closes without action</p>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Home Indicator (iOS) -->
+    <div class="h-5 flex justify-center items-center pb-2 z-40 shrink-0">
+      <div class="w-32 h-1 bg-slate-300 rounded-full"></div>
+    </div>
+
+  </main>
+
+  <!-- Interactive JavaScript Logic -->
+  <script>
+    // State management
+    let currentRole = 'admin'; // 'admin' | 'member'
+    let currentState = 'normal'; // 'normal' | 'loading' | 'offline' | 'success'
+    let modalVisible = true;
+
+    const copyData = {
+      admin: {
+        body: "This permanently deletes your gym, all Plans, Members and Payments. This cannot be undone.",
+        tag: "Admin",
+        userName: "Sipho Dlamini",
+        userEmail: "sipho@ironhaven.example.com",
+        rolePill: "Admin Account",
+        subtitle: "Iron Haven Gym • System Preferences"
+      },
+      member: {
+        body: "Your login will be deleted. Your gym keeps your membership and Payment records.",
+        tag: "Member",
+        userName: "Naledi Khumalo",
+        userEmail: "naledi.k@example.com",
+        rolePill: "Member Account",
+        subtitle: "Iron Haven Gym • Member Settings"
+      }
+    };
+
+    function updateView() {
+      const data = copyData[currentRole];
+
+      // Update text
+      document.getElementById('dialog-body-text').textContent = data.body;
+      document.getElementById('dialog-role-tag').textContent = data.tag;
+      document.getElementById('underlying-name').textContent = data.userName;
+      document.getElementById('underlying-email').innerHTML = `${data.userEmail} <span class="text-[10px] text-slate-400">(Read-only)</span>`;
+      document.getElementById('underlying-role-pill').textContent = data.rolePill;
+      document.getElementById('s10-subtitle').textContent = data.subtitle;
+
+      // Update Role Switcher Buttons
+      const btnAdmin = document.getElementById('btn-role-admin');
+      const btnMember = document.getElementById('btn-role-member');
+      if (currentRole === 'admin') {
+        btnAdmin.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-[#1F3A5F] text-white shadow-sm";
+        btnMember.className = "px-3 py-1.5 text-xs font-medium rounded-md transition-all text-slate-600 hover:text-slate-900";
+      } else {
+        btnMember.className = "px-3 py-1.5 text-xs font-semibold rounded-md transition-all bg-[#1F3A5F] text-white shadow-sm";
+        btnAdmin.className = "px-3 py-1.5 text-xs font-medium rounded-md transition-all text-slate-600 hover:text-slate-900";
+      }
+
+      // Handle States
+      const offlineBanner = document.getElementById('offline-banner');
+      const dialogOfflineNote = document.getElementById('dialog-offline-note');
+      const btnDelete = document.getElementById('btn-delete');
+      const btnDeleteSpinner = document.getElementById('btn-delete-spinner');
+      const btnDeleteLabel = document.getElementById('btn-delete-label');
+      const screenS1 = document.getElementById('screen-s1');
+      const modalOverlay = document.getElementById('modal-overlay');
+
+      // Reset base button states
+      btnDelete.disabled = false;
+      btnDeleteSpinner.classList.add('hidden');
+      btnDeleteLabel.textContent = "Delete";
+      offlineBanner.classList.add('hidden');
+      dialogOfflineNote.classList.add('hidden');
+      screenS1.classList.add('hidden');
+
+      // Update preview state buttons styling
+      const states = ['normal', 'loading', 'offline', 'success'];
+      states.forEach(s => {
+        const el = document.getElementById(`state-${s}`);
+        if (el) {
+          if (s === currentState) {
+            el.classList.add('ring-2', 'ring-slate-800', 'font-bold');
+          } else {
+            el.classList.remove('ring-2', 'ring-slate-800', 'font-bold');
+          }
+        }
+      });
+
+      if (currentState === 'loading') {
+        modalOverlay.style.display = 'flex';
+        btnDelete.disabled = true;
+        btnDeleteSpinner.classList.remove('hidden');
+        btnDeleteLabel.textContent = "Deleting account...";
+      } else if (currentState === 'offline') {
+        modalOverlay.style.display = 'flex';
+        offlineBanner.classList.remove('hidden');
+        dialogOfflineNote.classList.remove('hidden');
+        btnDelete.disabled = true;
+      } else if (currentState === 'success') {
+        modalOverlay.style.display = 'none';
+        screenS1.classList.remove('hidden');
+      } else {
+        // normal state
+        if (modalVisible) {
+          modalOverlay.style.display = 'flex';
+        } else {
+          modalOverlay.style.display = 'none';
+        }
+      }
+
+      // Re-initialize Lucide icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function setRole(role) {
+      currentRole = role;
+      updateView();
+    }
+
+    function setState(state) {
+      currentState = state;
+      if (state !== 'success') {
+        modalVisible = true;
+      }
+      updateView();
+    }
+
+    function toggleModal() {
+      modalVisible = true;
+      currentState = 'normal';
+      updateView();
+    }
+
+    // Tapping outside closes it without action
+    function onBackdropClick(event) {
+      if (event.target.id === 'modal-overlay') {
+        closeModalWithoutAction("Dismissed by clicking outside backdrop");
+      }
+    }
+
+    function handleCancelAction() {
+      closeModalWithoutAction("Dismissed by Cancel button");
+    }
+
+    function closeModalWithoutAction(reason) {
+      modalVisible = false;
+      document.getElementById('modal-overlay').style.display = 'none';
+      const toastBtn = document.getElementById('btn-toggle-modal');
+      toastBtn.classList.add('ring-2', 'ring-indigo-500');
+      setTimeout(() => toastBtn.classList.remove('ring-2', 'ring-indigo-500'), 1200);
+    }
+
+    function handleDeleteAction() {
+      if (currentState === 'offline') return;
+      // Show loading spinner briefly then redirect to S1 with toast
+      setState('loading');
+      setTimeout(() => {
+        setState('success');
+      }, 900);
+    }
+
+    function dismissToast() {
+      document.getElementById('success-toast').classList.add('opacity-0', 'transition-opacity');
+      setTimeout(() => {
+        document.getElementById('success-toast').classList.add('hidden');
+      }, 300);
+    }
+
+    function resetFromS1() {
+      modalVisible = true;
+      currentState = 'normal';
+      updateView();
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateView();
+    });
+  </script>
+</body>
+</html>

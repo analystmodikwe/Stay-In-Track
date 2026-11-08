@@ -1,0 +1,77 @@
+# STAY IN TRACK — Design System & Style Guide Reference Manual
+**Project:** STAY IN TRACK — Mobile-First Gym Membership & Payment Tracking System  
+**Format:** Reference Guide / Design Documentation  
+**Target Viewport:** Mobile (390px default), Responsive Scale to Desktop  
+
+---
+
+## 1. Brand Identity & Design Principles
+- **Core Value Proposition:** Intuitive, reliable, high-contrast membership tracking for front-desk gym administrators and gym members.
+- **Tone of Voice:** Short, respectful, pragmatic, and reassuring — like an experienced, helpful front-desk colleague.
+- **Visual Personality:** Functional, clean, trustworthy, high-contrast, uncluttered. No unnecessary decorative fluff, photographic clutter, or dark mode distractions.
+
+---
+
+## 2. Color Palette & Semantic Tokens
+
+### 2.1 Brand & Neutral Colors
+- **Primary Navy:** `#1F3A5F`  
+  - *Usage:* Primary CTA buttons, major section headings, active tab highlights, key navigation chrome.
+- **Accent Teal:** `#0F766E`  
+  - *Usage:* Active status pills, toggle active states, interactive focus rings, successful badges.
+- **Background Neutral:** `#F5F7FA`  
+  - *Usage:* Global screen background tint, canvas neutral canvas fill.
+- **Surface White:** `#FFFFFF`  
+  - *Usage:* Modal pop-up cards, form fields, table cards, container surfaces.
+
+### 2.2 Functional & Feedback Colors
+- **Danger Red:** `#C62828` / `#DC2626`  
+  - *Usage:* Destructive CTAs (Delete Member, Delete Account, Undo Payment), validation error states.
+- **Danger Light (Tint):** `#FEF2F2` / `#FEE2E2`  
+  - *Usage:* Error input backdrops, critical alert chips.
+- **Warning Amber:** `#D97706` / `#FEF3C7`  
+  - *Usage:* Grace period warning pills, offline notice highlights.
+- **Neutral Text Primary:** `#0F172A` / `#1E293B`
+- **Neutral Text Secondary:** `#475569` / `#64748B`
+- **Border / Divider:** `#CBD5E1` / `#E2E8F0`
+
+---
+
+## 3. Typography & Spatial System
+
+### 3.1 Type Hierarchy (Font Family: Inter)
+- **H1 / Screen Title:** 20px–22px, Bold (`font-weight: 700`), Tracking: `-0.02em`, Color: `#1F3A5F`
+- **H2 / Modal Header:** 16px–18px, Semi-Bold (`font-weight: 600`), Color: `#1F3A5F`
+- **Body Regular:** 14px, Regular (`font-weight: 400`), Line-Height: 1.5, Color: `#334155`
+- **Caption / Meta / Microcopy:** 12px, Medium (`font-weight: 500`), Color: `#64748B`
+- **Button Label:** 14px–15px, Semi-Bold (`font-weight: 600`), Centered
+
+### 3.2 Spacing & Layout Rules
+- **Grid Unit:** 8px base increment (8px, 16px, 24px, 32px, 48px).
+- **Side Margins:** 16px standard mobile gutter.
+- **Touch Target Minimum:** 48px standard touch height for all primary & secondary buttons.
+- **Corner Radii:**
+  - Form Inputs & Buttons: `8px`
+  - Pop-up Cards / Modals: `12px`
+  - Badges & Pills: `9999px` (fully rounded pill)
+
+---
+
+## 4. Standard UI Components & Patterns
+
+### 4.1 Buttons
+1. **Primary Button:** Height 48px, Background `#1F3A5F`, Text `#FFFFFF`, Radius 8px.
+2. **Secondary Outlined Button:** Height 48px, Border 1px solid `#CBD5E1`, Background `#FFFFFF`, Text `#334155`.
+3. **Danger Button:** Height 48px, Background `#C62828`, Text `#FFFFFF`, Radius 8px.
+
+### 4.2 Form Controls & Inputs
+- Height 44px–48px, Border 1px solid `#CBD5E1`, Border Radius 8px, Background `#FFFFFF`.
+- Focus state: 2px ring `#0F766E` with subtle glow.
+- Error state: 1px border `#DC2626` with red error text below field.
+
+### 4.3 Universal System States
+- **Normal:** Standard interactive view.
+- **Loading:** Animated spinner inside button or skeleton loader.
+- **Offline Banner:** Fixed banner: *"You're offline. Changes will not be saved."* with action buttons disabled.
+- **Success Notification:** Floating bottom or top toast message (e.g. *"Plan saved"*, *"Payment recorded"*).
+- **Dismissal Behavior:** Pop-up modals dismiss on background tap or explicit Cancel.

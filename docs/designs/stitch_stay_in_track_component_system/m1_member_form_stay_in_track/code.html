@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M1 Member Form - STAY IN TRACK</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: '#1F3A5F',
+            'primary-dark': '#152942',
+            accent: '#0F766E',
+            'accent-light': '#F0FDFA',
+            surface: '#F5F7FA',
+            danger: '#DC2626',
+            'danger-bg': '#FEF2F2',
+            'danger-border': '#FCA5A5',
+          },
+          boxShadow: {
+            'modal': '0 20px 25px -5px rgba(15, 23, 42, 0.25), 0 8px 10px -6px rgba(15, 23, 42, 0.2)',
+            'card': '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom radio and checkbox styling */
+    .custom-checkbox:checked {
+      background-color: #0F766E;
+      border-color: #0F766E;
+      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+    }
+    /* Hide scrollbars smoothly */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-900/60 font-sans min-h-screen text-slate-800 antialiased flex flex-col items-center p-3 sm:p-6">
+
+  <!-- Interactive State Bar (Top Preview Controller) -->
+  <header class="w-full max-w-[760px] bg-white rounded-2xl shadow-lg border border-slate-200 p-4 mb-5">
+    <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-teal-600 animate-pulse"></span>
+        <h1 class="text-xs sm:text-sm font-bold tracking-tight text-primary uppercase">Modal M1 Preview Controls</h1>
+        <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-medium">Logged in: Admin</span>
+      </div>
+      <div class="text-xs text-slate-500 font-medium">
+        Context: Opened from S6 (Members) or S7 (Member Details)
+      </div>
+    </div>
+
+    <!-- State Buttons Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 text-xs">
+      <!-- Mode toggles -->
+      <button onclick="setScenario('add-normal')" id="btn-add-normal" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-primary text-white border-primary">
+        <div class="font-bold flex items-center justify-between">Add Member <span class="text-[10px] opacity-75">Empty</span></div>
+        <div class="text-[11px] text-teal-200 truncate">Default New Form</div>
+      </button>
+
+      <button onclick="setScenario('edit-normal')" id="btn-edit-normal" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between">Edit Member <span class="text-[10px] opacity-75">Prefilled</span></div>
+        <div class="text-[11px] text-slate-500 truncate">Editable Email</div>
+      </button>
+
+      <button onclick="setScenario('edit-has-account')" id="btn-edit-has-account" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between">Edit: Signed Up <span class="text-[10px] text-amber-600 font-semibold">Locked</span></div>
+        <div class="text-[11px] text-slate-500 truncate">Email Field Disabled</div>
+      </button>
+
+      <button onclick="setScenario('loading')" id="btn-loading" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between">Loading State <span class="text-[10px] opacity-75">Saving</span></div>
+        <div class="text-[11px] text-slate-500 truncate">Button Spinner</div>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-2 text-xs">
+      <button onclick="setScenario('error-validation')" id="btn-error-validation" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between text-red-600">Validation Errors</div>
+        <div class="text-[11px] text-slate-500 truncate">Name, Phone, Plan, Age</div>
+      </button>
+
+      <button onclick="setScenario('error-duplicate')" id="btn-error-duplicate" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between text-red-600">Email Conflict</div>
+        <div class="text-[11px] text-slate-500 truncate">"Already exists"</div>
+      </button>
+
+      <button onclick="setScenario('offline')" id="btn-offline" class="state-btn px-2.5 py-2 rounded-lg font-medium text-left border transition bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100">
+        <div class="font-bold flex items-center justify-between text-slate-800">Offline Banner</div>
+        <div class="text-[11px] text-slate-500 truncate">Disabled Save Action</div>
+      </button>
+
+      <div class="flex gap-1.5">
+        <button onclick="showToast('Member added')" class="flex-1 px-2 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 font-medium text-[11px] text-center">
+          Toast: Added
+        </button>
+        <button onclick="showToast('Member updated')" class="flex-1 px-2 py-1.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-lg hover:bg-teal-100 font-medium text-[11px] text-center">
+          Toast: Updated
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Viewport Frame (390px wide standard) -->
+  <main class="relative w-[390px] h-[844px] max-h-[92vh] bg-surface rounded-[40px] shadow-2xl overflow-hidden border-[8px] border-slate-800 flex flex-col justify-end">
+    
+    <!-- Underneath screen context (Faded S6/S7 backdrop illusion) -->
+    <div class="absolute inset-0 bg-slate-200/90 pointer-events-none p-4 flex flex-col opacity-25 filter blur-[1px]">
+      <div class="h-6 w-full flex justify-between items-center text-xs text-slate-600 mb-4">
+        <span>09:41</span>
+        <span>Iron Haven Gym</span>
+      </div>
+      <div class="h-10 bg-slate-300 rounded-xl mb-4"></div>
+      <div class="h-32 bg-slate-300 rounded-xl mb-3"></div>
+      <div class="h-28 bg-slate-300 rounded-xl mb-3"></div>
+      <div class="h-28 bg-slate-300 rounded-xl mb-3"></div>
+    </div>
+
+    <!-- Backdrop Dimmer Overlay -->
+    <div id="modal-backdrop" class="absolute inset-0 bg-slate-950/40 backdrop-blur-[2px] transition-opacity duration-200"></div>
+
+    <!-- Toast Notification (Top floating inside frame) -->
+    <div id="toast" class="absolute top-12 left-4 right-4 z-50 transform -translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+      <div class="bg-primary text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-3 border border-slate-700/50">
+        <div class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+          <i data-lucide="check" class="w-4 h-4"></i>
+        </div>
+        <p id="toast-text" class="text-sm font-semibold tracking-wide">Member updated</p>
+      </div>
+    </div>
+
+    <!-- Full-Height Modal Container (Slide-up sheet / full mobile modal) -->
+    <section aria-labelledby="modal-title" class="relative z-20 w-full h-[94%] bg-white rounded-t-[28px] shadow-modal flex flex-col overflow-hidden border-t border-slate-200/80 animate-in slide-in-from-bottom duration-300">
+      
+      <!-- iOS pull bar -->
+      <div class="w-full pt-3 pb-1 flex justify-center shrink-0 cursor-grab active:cursor-grabbing">
+        <div class="w-10 h-1.2 bg-slate-300 rounded-full h-1"></div>
+      </div>
+
+      <!-- Offline Banner Container -->
+      <div id="offline-banner" class="hidden bg-slate-100 border-b border-slate-200 px-4 py-2.5 flex items-center gap-2.5 text-xs text-slate-700 shrink-0">
+        <i data-lucide="wifi-off" class="w-4 h-4 text-slate-500 shrink-0"></i>
+        <span class="font-medium">You're offline. Changes will not be saved.</span>
+      </div>
+
+      <!-- Modal Header -->
+      <header class="px-4 py-3 flex items-center justify-between border-b border-slate-100 shrink-0">
+        <div class="flex items-center gap-2">
+          <h2 id="modal-title" class="text-xl font-bold tracking-tight text-primary">Add member</h2>
+          <span id="role-pill" class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Admin</span>
+        </div>
+        <!-- Close Button (Closes without saving) -->
+        <button 
+          type="button" 
+          onclick="handleClose()"
+          class="w-10 h-10 -mr-2 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-800 hover:bg-slate-100 active:bg-slate-200 transition focus:outline-none focus:ring-2 focus:ring-accent"
+          aria-label="Close without saving"
+          title="Close without saving">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </header>
+
+      <!-- Scrollable Form Body -->
+      <div class="flex-1 overflow-y-auto px-4 py-4 space-y-4 no-scrollbar">
+
+        <!-- Informational context banner for gym admin -->
+        <div class="bg-accent-light border border-teal-100 rounded-xl p-3 flex items-start gap-2.5 text-xs text-teal-900">
+          <i data-lucide="info" class="w-4 h-4 text-accent shrink-0 mt-0.5"></i>
+          <p class="leading-relaxed">
+            Member records link directly to turnstile access and fee tracking at <strong class="font-semibold">Iron Haven Gym</strong>.
+          </p>
+        </div>
+
+        <form id="member-form" onsubmit="event.preventDefault(); handleSave();" class="space-y-4">
+          
+          <!-- Field 1: Full name -->
+          <div class="space-y-1.5" id="field-group-name">
+            <div class="flex justify-between items-center">
+              <label for="input-name" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Full name <span class="text-red-500">*</span>
+              </label>
+              <span id="name-count" class="text-[11px] text-slate-400">0/60</span>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="user" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="text" 
+                id="input-name"
+                name="fullName"
+                maxlength="60"
+                placeholder="e.g. Johan van der Merwe"
+                class="w-full pl-9 pr-3 py-3 text-sm bg-surface border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition duration-150"
+                oninput="updateCount('input-name', 'name-count'); clearFieldError('name');">
+            </div>
+            <!-- Error message container -->
+            <p id="error-name" class="hidden text-xs text-danger font-medium flex items-center gap-1.5 pt-0.5">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>Enter a name of 2 to 60 characters.</span>
+            </p>
+          </div>
+
+          <!-- Field 2: Email -->
+          <div class="space-y-1.5" id="field-group-email">
+            <div class="flex justify-between items-center">
+              <label for="input-email" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Email <span class="text-red-500">*</span>
+              </label>
+              <span id="email-badge" class="hidden text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">Read-only</span>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400" id="email-icon">
+                <i data-lucide="mail" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="email" 
+                id="input-email"
+                name="email"
+                placeholder="e.g. johan.vdm@example.com"
+                class="w-full pl-9 pr-3 py-3 text-sm bg-surface border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition duration-150 disabled:bg-slate-100 disabled:text-slate-500 disabled:border-slate-200 disabled:cursor-not-allowed"
+                oninput="clearFieldError('email');">
+            </div>
+            <!-- Helper text when Member already has an account -->
+            <p id="helper-email-signed-up" class="hidden text-xs text-slate-500 flex items-center gap-1 pt-0.5">
+              <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
+              <span>Email can't be changed after the Member signs up.</span>
+            </p>
+            <!-- Error message container -->
+            <p id="error-email" class="hidden text-xs text-danger font-medium flex items-center gap-1.5 pt-0.5">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span id="error-email-text">Enter a valid email address.</span>
+            </p>
+          </div>
+
+          <!-- Field 3: Phone (optional) -->
+          <div class="space-y-1.5" id="field-group-phone">
+            <div class="flex justify-between items-center">
+              <label for="input-phone" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Phone <span class="text-slate-400 font-normal lowercase">(optional)</span>
+              </label>
+              <span class="text-[11px] text-slate-400">SA mobile</span>
+            </div>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="phone" class="w-4 h-4"></i>
+              </div>
+              <input 
+                type="tel" 
+                id="input-phone"
+                name="phone"
+                placeholder="+27 82 555 0147"
+                class="w-full pl-9 pr-3 py-3 text-sm bg-surface border border-slate-300 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent transition duration-150"
+                oninput="clearFieldError('phone');">
+            </div>
+            <p id="error-phone" class="hidden text-xs text-danger font-medium flex items-center gap-1.5 pt-0.5">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>Enter a phone number like +27 82 555 0147.</span>
+            </p>
+          </div>
+
+          <!-- Field 4: Plan (dropdown of Active Plans) -->
+          <div class="space-y-1.5" id="field-group-plan">
+            <label for="select-plan" class="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+              Plan <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="tag" class="w-4 h-4"></i>
+              </div>
+              <select 
+                id="select-plan" 
+                name="plan"
+                class="w-full pl-9 pr-10 py-3 text-sm bg-surface border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent appearance-none cursor-pointer transition duration-150"
+                onchange="clearFieldError('plan'); updatePlanPreview();">
+                <option value="" disabled selected>Choose a Plan</option>
+                <option value="student">Student (R250.00 / month)</option>
+                <option value="standard">Standard (R350.00 / month)</option>
+                <option value="premium">Premium (R550.00 / month)</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400">
+                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+              </div>
+            </div>
+            
+            <!-- Dynamic plan perks hint -->
+            <div id="plan-perks-box" class="hidden bg-slate-50 rounded-lg p-2.5 border border-slate-200 text-xs text-slate-600 flex items-center justify-between">
+              <span id="plan-perks-text">Gym floor access, group classes, 1 locker</span>
+              <span class="text-emerald-700 font-semibold text-[11px] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Active Tier</span>
+            </div>
+
+            <p id="error-plan" class="hidden text-xs text-danger font-medium flex items-center gap-1.5 pt-0.5">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>Choose a Plan.</span>
+            </p>
+          </div>
+
+          <!-- Field 5: Checkbox "This Member is 18 or older" -->
+          <div class="pt-1" id="field-group-age">
+            <div class="p-3 bg-surface rounded-xl border border-slate-200 hover:border-slate-300 transition">
+              <label class="flex items-start gap-3 cursor-pointer select-none">
+                <input 
+                  type="checkbox" 
+                  id="check-age"
+                  name="isEighteenOrOlder"
+                  class="custom-checkbox w-5 h-5 rounded border border-slate-300 appearance-none bg-white shrink-0 mt-0.5 transition cursor-pointer focus:ring-2 focus:ring-accent focus:ring-offset-1"
+                  onchange="clearFieldError('age');">
+                <div class="text-xs text-slate-700 leading-snug">
+                  <span class="font-semibold text-slate-900 block">This Member is 18 or older</span>
+                  <span class="text-slate-500 text-[11px]">Required for independent facility access and indemnity.</span>
+                </div>
+              </label>
+            </div>
+            <p id="error-age" class="hidden text-xs text-danger font-medium flex items-center gap-1.5 pt-1.5 pl-1">
+              <i data-lucide="alert-circle" class="w-3.5 h-3.5 shrink-0"></i>
+              <span>The Member must be 18 or older.</span>
+            </p>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Modal Footer (Sticky Bottom Action Bar) -->
+      <footer class="p-4 bg-white border-t border-slate-100 flex flex-col gap-2 shrink-0">
+        <!-- 48px Primary Button "Save" -->
+        <button 
+          id="btn-save"
+          type="button" 
+          onclick="handleSave()"
+          class="w-full h-12 bg-primary hover:bg-primary-dark active:bg-slate-900 text-white font-semibold rounded-xl flex items-center justify-center gap-2 shadow-sm transition disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2">
+          
+          <!-- Normal label -->
+          <span id="btn-save-text" class="flex items-center gap-2 text-sm tracking-wide">
+            <i data-lucide="check" class="w-4 h-4"></i>
+            <span>Save</span>
+          </span>
+
+          <!-- Loading Spinner -->
+          <span id="btn-save-spinner" class="hidden flex items-center gap-2 text-sm text-white">
+            <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Saving member...</span>
+          </span>
+        </button>
+
+        <!-- Secondary Cancel Button for clear touch target -->
+        <button 
+          type="button" 
+          onclick="handleClose()"
+          class="w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-800 transition">
+          Discard changes
+        </button>
+      </footer>
+    </section>
+
+  </main>
+
+  <script>
+    // Initialise lucide icons
+    lucide.createIcons();
+
+    // Elements
+    const titleEl = document.getElementById('modal-title');
+    const rolePill = document.getElementById('role-pill');
+    const inputName = document.getElementById('input-name');
+    const inputEmail = document.getElementById('input-email');
+    const inputPhone = document.getElementById('input-phone');
+    const selectPlan = document.getElementById('select-plan');
+    const checkAge = document.getElementById('check-age');
+    const helperEmailLocked = document.getElementById('helper-email-signed-up');
+    const emailBadge = document.getElementById('email-badge');
+    const btnSave = document.getElementById('btn-save');
+    const btnSaveText = document.getElementById('btn-save-text');
+    const btnSaveSpinner = document.getElementById('btn-save-spinner');
+    const offlineBanner = document.getElementById('offline-banner');
+    const planPerksBox = document.getElementById('plan-perks-box');
+    const planPerksText = document.getElementById('plan-perks-text');
+
+    // Error elements
+    const errorName = document.getElementById('error-name');
+    const errorEmail = document.getElementById('error-email');
+    const errorEmailText = document.getElementById('error-email-text');
+    const errorPhone = document.getElementById('error-phone');
+    const errorPlan = document.getElementById('error-plan');
+    const errorAge = document.getElementById('error-age');
+
+    let currentMode = 'add'; // 'add' or 'edit'
+
+    function updateCount(inputId, countId) {
+      const el = document.getElementById(inputId);
+      const counter = document.getElementById(countId);
+      if (el && counter) {
+        counter.textContent = `${el.value.length}/60`;
+      }
+    }
+
+    function updatePlanPreview() {
+      const val = selectPlan.value;
+      if (val === 'student') {
+        planPerksBox.classList.remove('hidden');
+        planPerksText.textContent = 'Gym floor access';
+      } else if (val === 'standard') {
+        planPerksBox.classList.remove('hidden');
+        planPerksText.textContent = 'Gym floor access, 1 fitness assessment';
+      } else if (val === 'premium') {
+        planPerksBox.classList.remove('hidden');
+        planPerksText.textContent = 'Gym floor access, group classes, 1 locker';
+      } else {
+        planPerksBox.classList.add('hidden');
+      }
+    }
+
+    function clearAllErrors() {
+      [errorName, errorEmail, errorPhone, errorPlan, errorAge].forEach(el => el.classList.add('hidden'));
+      [inputName, inputEmail, inputPhone, selectPlan].forEach(el => {
+        el.classList.remove('border-danger', 'bg-danger-bg/40', 'focus:ring-danger');
+        el.classList.add('border-slate-300', 'bg-surface');
+      });
+      checkAge.parentElement.parentElement.classList.remove('border-danger', 'bg-danger-bg/30');
+      checkAge.parentElement.parentElement.classList.add('border-slate-200');
+    }
+
+    function clearFieldError(type) {
+      if (type === 'name') {
+        errorName.classList.add('hidden');
+        inputName.classList.remove('border-danger', 'bg-danger-bg/40');
+      } else if (type === 'email') {
+        errorEmail.classList.add('hidden');
+        inputEmail.classList.remove('border-danger', 'bg-danger-bg/40');
+      } else if (type === 'phone') {
+        errorPhone.classList.add('hidden');
+        inputPhone.classList.remove('border-danger', 'bg-danger-bg/40');
+      } else if (type === 'plan') {
+        errorPlan.classList.add('hidden');
+        selectPlan.classList.remove('border-danger', 'bg-danger-bg/40');
+      } else if (type === 'age') {
+        errorAge.classList.add('hidden');
+        checkAge.parentElement.parentElement.classList.remove('border-danger', 'bg-danger-bg/30');
+      }
+    }
+
+    function applyInputError(inputEl, errorEl, message = null) {
+      errorEl.classList.remove('hidden');
+      if (message) {
+        const textSpan = errorEl.querySelector('span');
+        if (textSpan) textSpan.textContent = message;
+      }
+      if (inputEl) {
+        inputEl.classList.add('border-danger', 'bg-danger-bg/40');
+        inputEl.classList.remove('border-slate-300');
+      }
+    }
+
+    function resetActiveButtons(activeId) {
+      document.querySelectorAll('.state-btn').forEach(btn => {
+        btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+        btn.classList.add('bg-slate-50', 'text-slate-700', 'border-slate-200');
+      });
+      const activeBtn = document.getElementById(activeId);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-50', 'text-slate-700', 'border-slate-200');
+        activeBtn.classList.add('bg-primary', 'text-white', 'border-primary');
+      }
+    }
+
+    function setScenario(scenario) {
+      clearAllErrors();
+      offlineBanner.classList.add('hidden');
+      btnSave.disabled = false;
+      btnSaveText.classList.remove('hidden');
+      btnSaveSpinner.classList.add('hidden');
+      helperEmailLocked.classList.add('hidden');
+      emailBadge.classList.add('hidden');
+      inputEmail.disabled = false;
+
+      resetActiveButtons('btn-' + scenario);
+
+      if (scenario === 'add-normal') {
+        currentMode = 'add';
+        titleEl.textContent = 'Add member';
+        inputName.value = '';
+        inputEmail.value = '';
+        inputPhone.value = '';
+        selectPlan.value = '';
+        checkAge.checked = false;
+        updateCount('input-name', 'name-count');
+        updatePlanPreview();
+      } 
+      else if (scenario === 'edit-normal') {
+        currentMode = 'edit';
+        titleEl.textContent = 'Edit member';
+        inputName.value = 'Johan van der Merwe';
+        inputEmail.value = 'johan.vdm@example.com';
+        inputPhone.value = '+27 82 555 0147';
+        selectPlan.value = 'premium';
+        checkAge.checked = true;
+        updateCount('input-name', 'name-count');
+        updatePlanPreview();
+      } 
+      else if (scenario === 'edit-has-account') {
+        currentMode = 'edit';
+        titleEl.textContent = 'Edit member';
+        inputName.value = 'Johan van der Merwe';
+        inputEmail.value = 'johan.vdm@example.com';
+        inputEmail.disabled = true;
+        helperEmailLocked.classList.remove('hidden');
+        emailBadge.classList.remove('hidden');
+        inputPhone.value = '+27 82 555 0147';
+        selectPlan.value = 'premium';
+        checkAge.checked = true;
+        updateCount('input-name', 'name-count');
+        updatePlanPreview();
+      } 
+      else if (scenario === 'loading') {
+        currentMode = 'add';
+        titleEl.textContent = 'Add member';
+        inputName.value = 'Johan van der Merwe';
+        inputEmail.value = 'johan.vdm@example.com';
+        selectPlan.value = 'premium';
+        checkAge.checked = true;
+        btnSaveText.classList.add('hidden');
+        btnSaveSpinner.classList.remove('hidden');
+        btnSave.disabled = true;
+        updatePlanPreview();
+      } 
+      else if (scenario === 'error-validation') {
+        currentMode = 'add';
+        titleEl.textContent = 'Add member';
+        inputName.value = 'J';
+        inputEmail.value = 'invalid-email';
+        inputPhone.value = '082123';
+        selectPlan.value = '';
+        checkAge.checked = false;
+        updateCount('input-name', 'name-count');
+        updatePlanPreview();
+
+        applyInputError(inputName, errorName, 'Enter a name of 2 to 60 characters.');
+        applyInputError(inputEmail, errorEmail, 'Enter a valid email address.');
+        applyInputError(inputPhone, errorPhone, 'Enter a phone number like +27 82 555 0147.');
+        applyInputError(selectPlan, errorPlan, 'Choose a Plan.');
+        applyInputError(null, errorAge, 'The Member must be 18 or older.');
+        checkAge.parentElement.parentElement.classList.add('border-danger', 'bg-danger-bg/30');
+      } 
+      else if (scenario === 'error-duplicate') {
+        currentMode = 'add';
+        titleEl.textContent = 'Add member';
+        inputName.value = 'Johan van der Merwe';
+        inputEmail.value = 'existing.member@example.com';
+        inputPhone.value = '+27 82 555 0147';
+        selectPlan.value = 'standard';
+        checkAge.checked = true;
+        updateCount('input-name', 'name-count');
+        updatePlanPreview();
+
+        applyInputError(inputEmail, errorEmail, 'A Member with this email already exists.');
+      } 
+      else if (scenario === 'offline') {
+        currentMode = 'add';
+        titleEl.textContent = 'Add member';
+        inputName.value = 'Johan van der Merwe';
+        inputEmail.value = 'johan.vdm@example.com';
+        selectPlan.value = 'premium';
+        checkAge.checked = true;
+        updatePlanPreview();
+        offlineBanner.classList.remove('hidden');
+        btnSave.disabled = true;
+      }
+
+      lucide.createIcons();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = message;
+      toast.classList.remove('-translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('-translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function handleSave() {
+      if (btnSave.disabled) return;
+      // Show simulated spinner briefly, then success toast
+      btnSaveText.classList.add('hidden');
+      btnSaveSpinner.classList.remove('hidden');
+      btnSave.disabled = true;
+
+      setTimeout(() => {
+        btnSaveText.classList.remove('hidden');
+        btnSaveSpinner.classList.add('hidden');
+        btnSave.disabled = false;
+        const msg = currentMode === 'add' ? 'Member added' : 'Member updated';
+        showToast(msg);
+      }, 700);
+    }
+
+    function handleClose() {
+      // Simulate close animation/feedback
+      const modal = document.querySelector('section');
+      modal.classList.add('translate-y-full');
+      setTimeout(() => {
+        modal.classList.remove('translate-y-full');
+      }, 500);
+    }
+
+    // Default scenario on boot
+    setScenario('add-normal');
+  </script>
+</body>
+</html>
