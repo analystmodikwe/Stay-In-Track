@@ -966,21 +966,21 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-C-15 | Component | `PlanCard.test.tsx` | Name, "R350.00 per month", Benefits, Status text and Member count; tap opens M2 |
 | T-S10-2 | Component | `Settings.test.tsx` | The "Grace period (days)" field and "Save" show only for an Admin, never for a Member |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] No new migrations. Use the tables and policies from Phase 2. Any change needs a new migration file and must be added to Section 8.6 first.
+- [x] No new migrations. Use the tables and policies from Phase 2. Any change needs a new migration file and must be added to Section 8.6 first.
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/rules/plan.ts`, `grace.ts`; `src/lib/api/plans.ts`, `gym.ts`.
-- [ ] S8 Plans, PlanCard, M2 Plan Form, and the Admin Grace period block on S10. Build each to its design with every state.
+- [x] `src/lib/rules/plan.ts`, `grace.ts`; `src/lib/api/plans.ts`, `gym.ts`.
+- [x] S8 Plans, PlanCard, M2 Plan Form, and the Admin Grace period block on S10. Build each to its design with every state.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
 
 **Step 5: Manual checks (human)**
 
@@ -989,11 +989,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S8, S10 (Grace period block) and M2) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S8, S10 (Grace period block) and M2) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 4: Plans and Grace period (F3)`
 
@@ -1487,6 +1487,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 1 | 8 Nov 2026 | Done | 27 / 27 (25 vitest, 2 playwright) | Phase 1: Foundation | React 18.3.1, Vite 5.4.21, React Router 6.28.0, Tailwind CSS 3.4.14, Lucide React 0.456.0, Inter 5.0.0, Vitest 2.1.9, Playwright 1.58.2, Supabase JS 2.47.0 |
 | 2 | 8 Nov 2026 | Ready for manual check | 34 / 34 (25 vitest, 2 playwright, 10 pgTAP suites) | Phase 2: Data and security | PostgreSQL migrations 0001-0005, RLS policies SEC1-SEC20, triggers and business functions, seed script and README |
 | 3 | 8 Nov 2026 | Ready for manual check | 158 / 158 (85 vitest unit/comp, 9 vitest int, 2 playwright E2E, 62 pgTAP) | Phase 3: Accounts (F1) | Auth rules, API, S2, S3, S4, S10 (shell), S11, M4, route guards, TabBar/SideMenu |
+| 4 | 8 Nov 2026 | Ready for manual check | 178 / 178 (104 vitest unit/comp, 12 vitest int, 62 pgTAP) | Phase 4: Plans and Grace period (F3) | Rules BR1/BR4, Plans & Gym API, S8 Plans, M2 Plan Form, Admin Grace period block on S10 |
 
 ---
 

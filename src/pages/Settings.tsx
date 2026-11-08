@@ -1,33 +1,59 @@
 /**
- * S10 Settings — Phase 3 shell
- * Account block (name + email, read-only), Privacy Notice → S11,
- * Logout → S1 (no confirm), Delete account → M4.
- * Grace period and reminders added in later phases.
- * PRD T-S10-1
+ * S10 Settings — Phase 3 & 4
+ * Account block (name + email, read-only), Grace period (Admin only),
+ * Privacy Notice → S11, Logout → S1 (no confirm), Delete account → M4.
+ * Reminders added in Phase 8.
+ * PRD T-S10-1, T-S10-2, T-US10-1, T-US10-2
  */
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronRight } from 'lucide-react'
 import { Header } from '../components/Header'
 import { TabBar } from '../components/TabBar'
 import { OfflineBanner } from '../components/OfflineBanner'
+import { TextField } from '../components/TextField'
+import { Button } from '../components/Button'
+import { Toast } from '../components/Toast'
 import { DeleteAccount } from '../modals/DeleteAccount'
 import { logOut } from '../lib/api/auth'
+import { getGym, updateGracePeriod } from '../lib/api/gym'
+import { validateGraceDays } from '../lib/rules/grace'
+import { messages } from '../lib/messages'
 import { useSession } from '../hooks/useSession'
 import { useOnline } from '../hooks/useOnline'
 
 export function Settings() {
   const navigate = useNavigate()
   const { session } = useSession()
-  const isOnline   = useOnline()
+  const isOnline = useOnline()
 
-  const user     = session?.user
+  const user = session?.user
   const fullName = (user?.user_metadata as { full_name?: string } | undefined)?.full_name ?? ''
-  const email    = user?.email ?? ''
-  const role     = ((user?.user_metadata as { role?: string } | undefined)?.role ?? 'admin') as 'admin' | 'member'
+  const email = user?.email ?? ''
+  const role = ((user?.user_metadata as { role?: string } | undefined)?.role ?? 'admin') as
+    | 'admin'
+    | 'member'
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [logoutLoading, setLogoutLoading]     = useState(false)
+  const [logoutLoading, setLogoutLoading] = useState(false)
+
+  // Grace period state
+  const [graceDays, setGraceDays] = useState<string>('')
+  const [graceError, setGraceError] = useState<string | null>(null)
+  const [savingGrace, setSavingGrace] = useState(false)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (role === 'admin') {
+      getGym()
+        ?.then((res) => {
+          if (res?.data) {
+            setGraceDays(res.data.grace_days.toString())
+          }
+        })
+        .catch(() => {})
+    }
+  }, [role])
 
   async function handleLogout() {
     setLogoutLoading(true)
@@ -41,6 +67,26 @@ export function Settings() {
     navigate('/')
   }
 
+  async function handleSaveGrace(e: React.FormEvent) {
+    e.preventDefault()
+    const err = validateGraceDays(graceDays)
+    if (err) {
+      setGraceError(err)
+      return
+    }
+
+    setGraceError(null)
+    setSavingGrace(true)
+    const res = await updateGracePeriod(parseInt(graceDays, 10))
+    setSavingGrace(false)
+
+    if (res.error) {
+      setGraceError(res.error)
+    } else {
+      setToastMessage(messages.graceSaved)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F7FA] flex flex-col">
       <Header title="Settings" />
@@ -52,6 +98,35 @@ export function Settings() {
           <p className="text-[16px] font-semibold text-[#111827]">{fullName}</p>
           <p className="text-[16px] text-[#4B5563]">{email}</p>
         </section>
+
+        {/* Grace period block (Admin only) */}
+        {role === 'admin' && (
+          <section className="bg-white rounded-xl shadow-sm p-4 space-y-3">
+            <h2 className="text-[18px] font-semibold text-[#111827]">Gym settings</h2>
+            <form onSubmit={handleSaveGrace} className="space-y-4" noValidate>
+              <TextField
+                id="grace-period"
+                label="Grace period (days)"
+                type="number"
+                value={graceDays}
+                onChange={(e) => {
+                  setGraceDays(e.target.value)
+                  if (graceError) setGraceError(null)
+                }}
+                error={graceError || undefined}
+              />
+              <Button
+                type="submit"
+                variant="primary"
+                loading={savingGrace}
+                disabled={!isOnline}
+                className="w-full"
+              >
+                Save
+              </Button>
+            </form>
+          </section>
+        )}
 
         {/* Rows */}
         <section className="bg-white rounded-xl shadow-sm divide-y divide-[#CBD5E1]">
@@ -97,6 +172,10 @@ export function Settings() {
         onClose={() => setShowDeleteModal(false)}
         onDeleted={handleDeleted}
       />
+
+      {toastMessage && (
+        <Toast text={toastMessage} onDismiss={() => setToastMessage(null)} />
+      )}
     </div>
   )
 }

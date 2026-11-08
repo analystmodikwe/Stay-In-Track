@@ -14,12 +14,19 @@ vi.mock('../../src/lib/api/auth', () => ({
   deleteAccount: vi.fn(),
 }))
 
+vi.mock('../../src/lib/api/gym', () => ({
+  getGym: vi.fn(),
+  updateGracePeriod: vi.fn(),
+}))
+
 vi.mock('../../src/hooks/useSession', () => ({
   useSession: vi.fn(),
 }))
 
 import { useSession } from '../../src/hooks/useSession'
 import * as authApi from '../../src/lib/api/auth'
+import * as gymApi from '../../src/lib/api/gym'
+import { messages } from '../../src/lib/messages'
 
 function renderSettings(role: 'admin' | 'member' = 'admin') {
   vi.mocked(useSession).mockReturnValue({
@@ -44,7 +51,13 @@ function renderSettings(role: 'admin' | 'member' = 'admin') {
 }
 
 describe('T-S10-1 Settings screen (shell)', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(gymApi.getGym).mockResolvedValue({
+      data: { id: 'gym-1', name: 'Iron Haven Gym', grace_days: 3 },
+      error: null,
+    })
+  })
 
   it('T-S10-1a shows the account name (read-only)', () => {
     renderSettings()
@@ -83,6 +96,73 @@ describe('T-S10-1 Settings screen (shell)', () => {
     await waitFor(() =>
       expect(screen.getByRole('dialog')).toBeInTheDocument()
     )
+  })
+
+  it('T-S10-2 Grace period field and Save show only for Admin, never for Member', async () => {
+    vi.mocked(gymApi.getGym).mockResolvedValue({
+      data: { id: 'gym-1', name: 'Iron Haven Gym', grace_days: 3 },
+      error: null,
+    })
+
+    // Admin view
+    const { unmount } = renderSettings('admin')
+    await waitFor(() => {
+      expect(screen.getByLabelText(/grace period/i)).toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument()
+    })
+    unmount()
+
+    // Member view
+    renderSettings('member')
+    expect(screen.queryByLabelText(/grace period/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeInTheDocument()
+  })
+
+  it('T-US10-1 Admin updates Grace period successfully and sees toast', async () => {
+    vi.mocked(gymApi.getGym).mockResolvedValue({
+      data: { id: 'gym-1', name: 'Iron Haven Gym', grace_days: 3 },
+      error: null,
+    })
+    vi.mocked(gymApi.updateGracePeriod).mockResolvedValue({ error: null })
+
+    renderSettings('admin')
+
+    const input = await screen.findByLabelText(/grace period/i)
+    expect(input).toHaveValue(3)
+
+    await userEvent.clear(input)
+    await userEvent.type(input, '5')
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    await userEvent.click(saveButton)
+
+    await waitFor(() => {
+      expect(gymApi.updateGracePeriod).toHaveBeenCalledWith(5)
+      expect(screen.getByText(messages.graceSaved)).toBeInTheDocument()
+    })
+  })
+
+  it('T-US10-2 validates Grace period boundary (15 or empty -> error message)', async () => {
+    vi.mocked(gymApi.getGym).mockResolvedValue({
+      data: { id: 'gym-1', name: 'Iron Haven Gym', grace_days: 3 },
+      error: null,
+    })
+
+    renderSettings('admin')
+
+    const input = await screen.findByLabelText(/grace period/i)
+    await userEvent.clear(input)
+    await userEvent.type(input, '15')
+
+    const saveButton = screen.getByRole('button', { name: 'Save' })
+    await userEvent.click(saveButton)
+
+    expect(screen.getByText(messages.graceError)).toBeInTheDocument()
+    expect(gymApi.updateGracePeriod).not.toHaveBeenCalled()
+
+    await userEvent.clear(input)
+    await userEvent.click(saveButton)
+    expect(screen.getByText(messages.graceError)).toBeInTheDocument()
   })
 })
 

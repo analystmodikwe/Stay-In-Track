@@ -40,12 +40,12 @@ export function PlanCard({ name, price, benefits, status, memberCount, onClick }
           {status === 'active' ? 'Active' : 'Inactive'}
         </span>
       </div>
-      <p className="text-body text-text-secondary">{formatMoney(price)} per month</p>
+      <p className="text-body text-text-secondary">{`${formatMoney(price)} per month`}</p>
       {benefits && (
         <p className="text-small text-text-secondary whitespace-pre-wrap">{benefits}</p>
       )}
       <p className="text-small text-text-secondary">
-        {memberCount} member{memberCount !== 1 ? 's' : ''}
+        {`${memberCount} ${memberCount === 1 ? 'member' : 'members'}`}
       </p>
     </button>
   )

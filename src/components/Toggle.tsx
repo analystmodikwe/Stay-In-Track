@@ -26,6 +26,7 @@ export function Toggle({ label, id, disabled, ...props }: ToggleProps) {
           id={toggleId}
           type="checkbox"
           role="switch"
+          aria-checked={props.checked !== undefined ? !!props.checked : undefined}
           disabled={disabled}
           className="sr-only peer"
           {...props}

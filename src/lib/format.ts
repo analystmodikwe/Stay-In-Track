@@ -8,12 +8,9 @@ const SAST_TIMEZONE = 'Africa/Johannesburg'
 
 /** Format a money amount as "R1,350.00". */
 export function formatMoney(amount: number): string {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount).replace('ZAR', 'R')
+  const parts = Number(amount || 0).toFixed(2).split('.')
+  const integerWithCommas = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return `R${integerWithCommas}.${parts[1]}`
 }
 
 /**
