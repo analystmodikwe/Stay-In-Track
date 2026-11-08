@@ -43,3 +43,4 @@ select has_function('public', 'is_admin', 'is_admin function exists');
 
 select * from finish();
 rollback;
+

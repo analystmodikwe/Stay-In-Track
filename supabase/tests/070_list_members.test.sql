@@ -6,3 +6,4 @@ select has_function('public', 'list_members', 'list_members function exists');
 
 select * from finish();
 rollback;
+

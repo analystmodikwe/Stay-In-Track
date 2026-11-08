@@ -33,3 +33,4 @@ select has_column('public', 'payments', 'previous_paid_until', 'payments.previou
 
 select * from finish();
 rollback;
+

@@ -354,3 +354,4 @@ grant execute on function public.get_dashboard(date) to authenticated;
 grant execute on function public.delete_my_account() to authenticated;
 grant execute on function public.today_sast() to authenticated;
 grant execute on function public.member_status(date, integer, date) to authenticated;
+

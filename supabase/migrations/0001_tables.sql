@@ -74,3 +74,4 @@ create index payments_member_created_idx on public.payments (member_id, created_
 create index payments_gym_date_idx on public.payments (gym_id, payment_date);
 create index plans_gym_id_idx on public.plans (gym_id);
 create index profiles_gym_id_idx on public.profiles (gym_id);
+

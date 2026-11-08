@@ -14,3 +14,4 @@ select col_not_null('public', 'payments', 'payment_date', 'payments.payment_date
 
 select * from finish();
 rollback;
+

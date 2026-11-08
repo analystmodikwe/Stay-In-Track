@@ -17,3 +17,4 @@ select has_function('public', 'member_plan_active', 'Trigger member_plan_active 
 
 select * from finish();
 rollback;
+

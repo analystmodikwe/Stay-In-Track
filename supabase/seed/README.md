@@ -25,3 +25,4 @@ All accounts share the password set in `SEED_TEST_PASSWORD` in your `.env` file 
 
 - **Johan van der Merwe** (`johan.vdm@example.com`): Active (paid until 1 Dec 2026)
 - **Ayesha Patel** (`ayesha.p@example.com`): Overdue (paid until 10 Oct 2026)
+

@@ -19,3 +19,4 @@ select has_function('public', 'delete_my_account', 'delete_my_account exists');
 
 select * from finish();
 rollback;
+

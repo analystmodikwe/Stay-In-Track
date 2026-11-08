@@ -174,3 +174,4 @@ create policy "payments_delete" on public.payments
   );
 
 -- SEC16: No update policy on payments (payments are never edited, BR6)
+

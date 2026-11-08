@@ -6,3 +6,4 @@ select has_function('public', 'delete_my_account', 'delete_my_account function e
 
 select * from finish();
 rollback;
+

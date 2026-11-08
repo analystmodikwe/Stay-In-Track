@@ -56,3 +56,4 @@ select col_default_is('public', 'gyms', 'grace_days', '3', 'T-BR4-1: gyms.grace_
 
 select * from finish();
 rollback;
+

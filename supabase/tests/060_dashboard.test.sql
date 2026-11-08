@@ -7,3 +7,4 @@ select has_function('public', 'today_sast', 'today_sast helper exists');
 
 select * from finish();
 rollback;
+

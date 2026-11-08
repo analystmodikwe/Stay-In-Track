@@ -7,3 +7,4 @@ select has_function('public', 'is_admin', 'is_admin exists for isolation');
 
 select * from finish();
 rollback;
+
