@@ -10,7 +10,7 @@
 | Built from PRD version | v1.0 (Approved, 4 Nov 2026). Changes from v0.1 are listed in `PRD_CHANGE_LOG_v1.0.md` and in the PRD Change log. |
 | Screen designs | Stitch project "STAY IN TRACK" (style guide + S1–S11 + M1–M6); exported PNGs in `docs/designs/` (one file per S# and M#, e.g. `S1.png`, `M3.png`) |
 | Plan version | v0.2 |
-| Repository | To be added (GitHub repository not yet created) |
+| Repository | https://github.com/analystmodikwe/Stay-In-Track.git |
 | Status | Ready to build |
 | Last updated | 4 Nov 2026 |
 

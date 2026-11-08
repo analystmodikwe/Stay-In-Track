@@ -8,14 +8,32 @@
 | **Author(s)** | Lesedi Modikwe |
 | **Course code and cohort** | AI FULLSTACK SOFTWARE DEVELOPMENT, SNPL COHORT APRIL INTAKE |
 | **Facilitator / reviewer** | Mnelisi |
-| **Version** | v0.1 |
-| **Status** | Draft |
+| **Version** | v1.0 |
+| **Status** | Approved |
 
 #### Change log
 
 | Version | Date | Section(s) changed | What changed | Regenerated? |
 |---|---|---|---|---|
 | v0.1 | 28 Oct 2026 | All | First draft | None |
+| v1.0 | 4 Nov 2026 | S4, US2, Flow 7 | S4 gets a second mode, "Set new password", opened from the email link (Flow 7, step 3), with its title, field, button and success text. Adds acceptance test T-US2-5. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 11.1 | Tools added: React Testing Library + jsdom, pgTAP, Playwright, ESLint, secretlint, `lucide-react`, `@fontsource/inter`. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 9.1 | PRD 9.1 wins over the Stitch style guide (16px body text, text colours #111827 / #4B5563, warning #7A4B00). Border colour #CBD5E1 added. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 8.2, S2, S5, M1, S9, S10 | Stitch extras are not built: "Confirm Password" on S2, quick actions and recent payments on S5, "Start date" on M1, "days remaining" on S9, notification preferences on S10. Button names follow the PRD. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | BR8 | If the same email exists in more than one gym, a new sign-up links to the oldest unlinked Member record (earliest `created_at`). | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 5, US2 | "After 5 wrong passwords, lock for 15 minutes" becomes "after too many attempts" (Supabase Auth rate limit). The message stays "Too many attempts. Try again in 15 minutes." | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 5 | The 30-day login is enforced by the app signing out sessions older than 30 days on start-up. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | BR1, BR2 | Plan names and Member emails are unique ignoring upper/lower case (email stored in lower case). | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | BR2 | Phone numbers may be typed with spaces; spaces are removed before saving (+27825550147) and shown with spaces. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 11.1, 11.6, 11.7, 13.4 | `MASTER.md` is `IMPLEMENTATION_PLAN.md`. Status changes from Draft to Approved. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 10.1 Payment | `recorded_by` is optional and is cleared when its Profile is deleted. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 7.2 | Navigation map added, built from the "Who / flow" lines of 8.2. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 12.4 | The Supabase region is chosen in Phase 10, and the exact country sentence for S11 is written then. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 5, 11.3, M4 | Account deletion runs through the database function `delete_my_account()` (no Edge Function). | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 11.5 | New variable `SEED_TEST_PASSWORD`; new file `.env.hosted-test` for the second hosted project. Both stay out of Git. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | BR3, 4.5 | The last Grace day is `paid_until` + Grace period days, counted in. Thando (paid until 26 Oct, 3 days) is in Grace period until 29 Oct and Overdue from 30 Oct. The banner "Please pay by 29 Oct 2026" shows that last Grace day. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | 11.6 | Screens are exported from Stitch as `docs/designs/S1.png` … `M6.png`. | IMPLEMENTATION_PLAN.md |
+| v1.0 | 4 Nov 2026 | M6, BR6 | When the undone Payment was the Member's first, the text is "The Member goes back to No Payment yet." | IMPLEMENTATION_PLAN.md |
 
 ---
 
@@ -120,14 +138,14 @@ Every "Cannot do" is blocked by the database through Row-Level Security (RLS), n
 
 | ID | Rule (exact logic, numbers and limits) | Used by |
 |---|---|---|
-| BR1 | Plan. Name 2-30 characters, unique within the gym. Price R1.00-R5,000.00 per month. Benefits optional, up to 300 characters, plain text. Status is Active or Inactive. An Inactive Plan cannot be assigned to a new Member; Members already on it keep it. A Plan has no delete button in v1. | F3, S8, M2 |
-| BR2 | Member. Full name 2-60 characters. Email required, up to 100 characters, unique within the gym. Phone optional, in +27 format (+27 followed by 9 digits). The Admin must tick "This Member is 18 or older". Maximum 500 Members per gym. A Member must be assigned an Active Plan. | F2, S6, M1 |
-| BR3 | Status is calculated at the moment it is shown, in SAST, from paid_until and the gym's Grace period days (BR4).<br>**Active:** paid_until is today or later.<br>**Grace period:** paid_until is earlier than today, but today is no more than the Grace period days after paid_until.<br>**Overdue:** more than the Grace period days after paid_until, or the Member has no Payment yet (paid_until is empty). | F3, F4, F5, F6, S5-S9 |
+| BR1 | Plan. Name 2-30 characters, unique within the gym (ignoring upper and lower case, so "Student" and "student" are the same name). Price R1.00-R5,000.00 per month. Benefits optional, up to 300 characters, plain text. Status is Active or Inactive. An Inactive Plan cannot be assigned to a new Member; Members already on it keep it. A Plan has no delete button in v1. | F3, S8, M2 |
+| BR2 | Member. Full name 2-60 characters. Email required, up to 100 characters, unique within the gym (ignoring upper and lower case; saved in lower case). Phone optional, in +27 format (+27 followed by 9 digits). The Admin may type spaces (for example "+27 82 555 0147"); the spaces are removed before saving (+27825550147) and the number is shown with spaces. The Admin must tick "This Member is 18 or older". Maximum 500 Members per gym. A Member must be assigned an Active Plan. | F2, S6, M1 |
+| BR3 | Status is calculated at the moment it is shown, in SAST, from paid_until and the gym's Grace period days (BR4).<br>**Active:** paid_until is today or later.<br>**Grace period:** paid_until is earlier than today, but today is no more than the Grace period days after paid_until. The last day of the Grace period is paid_until + the Grace period days, counted in (paid until 26 Oct with 3 Grace days: Grace period through 29 Oct).<br>**Overdue:** more than the Grace period days after paid_until, or the Member has no Payment yet (paid_until is empty). | F3, F4, F5, F6, S5-S9 |
 | BR4 | Grace period. Set by the Admin in S10 as a whole number of days from 0 to 14. The default for a new gym is 3. Changing it changes every Member's Status immediately. | F3, S10 |
 | BR5 | Record Payment. Admin enters months paid (1-12, default 1), amount (R1.00-R50,000.00, default = Plan price x months, can be changed), method (Cash, EFT or Card) and payment date (default today, cannot be in the future). New paid_until = (the later of the old paid_until and the payment date) + months. If a day does not exist in the new month, the last day of that month is used (31 Jan + 1 month = 28 Feb). The Payment saves the old paid_until as previous_paid_until. | F3, S7, M3 |
-| BR6 | Undo Payment. Only the latest Payment of a Member can be undone, and only within 24 hours of recording it. Undo deletes the Payment and sets paid_until back to previous_paid_until. No Payment can be edited. | F3, S7, M6 |
+| BR6 | Undo Payment. Only the latest Payment of a Member can be undone, and only within 24 hours of recording it. Undo deletes the Payment and sets paid_until back to previous_paid_until. If it was the Member's first Payment, paid_until becomes empty and the Member is Overdue ("No Payment yet"). No Payment can be edited. | F3, S7, M6 |
 | BR7 | Revenue this month = the sum of Payment amounts whose payment date is in the current calendar month (SAST) for the gym. | F5, S5 |
-| BR8 | Member sign-up link. A person can sign up as a Member only if the Admin has already added a Member with the same email (BR2) and no account is linked to it yet. On sign-up the account is linked to that Member record. After linking, the Member's email cannot be changed. | F1, F2, S2, M1 |
+| BR8 | Member sign-up link. A person can sign up as a Member only if the Admin has already added a Member with the same email (BR2) and no account is linked to it yet. If two gyms added the same email, the sign-up links to the oldest unlinked Member record (earliest created_at). On sign-up the account is linked to that Member record. After linking, the Member's email cannot be changed. | F1, F2, S2, M1 |
 | BR9 | Search. On S6, results appear after 2 or more characters of name or email, sorted by full name A to Z, 20 at a time. A Status filter shows All, Active, Grace period or Overdue. Each row shows a Status badge with an icon and text. | F4, S6 |
 | BR10 | Reminders. The "Payment due soon" notice shows on S9 when reminders are on and paid_until is within the next 3 days (today to today + 3 days). The Grace period and Overdue notices always show, whatever the reminder setting. | F7, S9, S10 |
 | BR11 | Delete Member. Deletes the Member record and all its Payments immediately and permanently. If the Member has an account, the account is unlinked and the Member sees "Your membership record was removed. Please contact your gym." on next log-in. Revenue totals drop by the deleted Payments. | F2, S7, M5 |
@@ -140,7 +158,7 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 | Trigger | Who receives it | Channel | Exact text | Tapping it opens |
 |---|---|---|---|---|
 | Reminders on and paid_until within 3 days (BR10) | Member | In-app banner on S9 | "Payment due soon: your membership ends on 15 Nov 2026." | Nothing (banner only) |
-| Status is Grace period | Member | In-app banner on S9 | "Your payment is late. Please pay by 29 Oct 2026 to keep your access." | Nothing (banner only) |
+| Status is Grace period | Member | In-app banner on S9 | "Your payment is late. Please pay by 29 Oct 2026 to keep your access." (the date is the last Grace day: paid_until + Grace period days, BR3) | Nothing (banner only) |
 | Status is Overdue | Member | In-app banner on S9 | "Your membership has expired. Please pay at the gym to get access again." | Nothing (banner only) |
 
 ## 5. Accounts and sign-in
@@ -152,11 +170,11 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 | **Minimum age** | 18. S2 has the checkbox "I am 18 or older", which must be ticked. This avoids needing parent consent under POPIA in v1. |
 | **Email verification** | Required. After sign-up the user goes to S3 with the banner "Check your email and tap the link to verify your account." Log-in is refused until the email is verified. |
 | **Password rules** | At least 8 characters, including at least 1 number. An eye icon shows or hides the password. |
-| **Forgot password** | S4 sends a reset link. The link works for 1 hour. |
-| **Failed login attempts** | After 5 wrong passwords: "Too many attempts. Try again in 15 minutes." |
-| **Stay logged in** | 30 days, then the user must log in again. |
+| **Forgot password** | S4 sends a reset link. The link works for 1 hour. The link opens S4 in "Set new password" mode, where the user types the new password. |
+| **Failed login attempts** | After too many wrong passwords in a row (the built-in Supabase Auth rate limit): "Too many attempts. Try again in 15 minutes." |
+| **Stay logged in** | 30 days, then the user must log in again. The app checks the age of the session when it starts and signs the user out if it is older than 30 days. |
 | **Log out** | S10 → "Logout". No confirmation. Goes to S1. |
-| **Delete account** | S10 → "Delete account" → M4. Admin: deletes the account, the gym, all Plans, Members and Payments immediately and permanently. Member: deletes the login and reminder setting immediately; the gym keeps the Member record and Payments for its financial records until the Admin deletes them (BR11). |
+| **Delete account** | S10 → "Delete account" → M4. Admin: deletes the account, the gym, all Plans, Members and Payments immediately and permanently. Member: deletes the login and reminder setting immediately; the gym keeps the Member record and Payments for its financial records until the Admin deletes them (BR11). Both are done by the database function `delete_my_account()`, which works only on the logged-in user's own account. |
 | **Change email or phone** | Not in v1. |
 
 ## 6. User stories, acceptance criteria and edge cases
@@ -174,7 +192,8 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 - **T-US2-1** Given my email is verified, when I enter the correct email and password on S3 and tap "Login", then an Admin goes to S5 Admin Dashboard and a Member goes to S9 Member Dashboard.
 - **T-US2-2 (unhappy)** Given I have not verified my email, when I tap "Log in", then I see "Please verify your email first." and a "Resend email" link.
 - **T-US2-3** Given I tap "Forgot password?" and enter my email on S4, when I tap "Send link", then I always see "If an account exists for this email, we've sent a reset link." The message never reveals whether the account exists.
-- **T-US2-4 (unhappy)** Given I enter a wrong password 5 times, then I see "Too many attempts. Try again in 15 minutes." and "Login" is disabled.
+- **T-US2-4 (unhappy)** Given I enter a wrong password too many times in a row (the Supabase Auth limit), then I see "Too many attempts. Try again in 15 minutes." and "Login" is disabled.
+- **T-US2-5** Given I opened the reset link from my email within 1 hour, when I type a valid new password on S4 and tap "Save password", then I go to S3 with the banner "Password updated. Please log in." and I can log in with the new password.
 
 **US3 (F1):** As a Member, I want to sign up with the email my gym gave so that I can see my own Status.
 
@@ -332,8 +351,8 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 
 1. S3 Log In: taps "Forgot password?" → S4 Forgot Password
 2. S4: enters her email, taps "Send link" → sees "If an account exists for this email, we've sent a reset link."
-3. Opens the link within 1 hour and sets a new password; if the link is older than 1 hour, she repeats step 2
-4. Taps "Back to log in" → S3
+3. Opens the link within 1 hour → S4 in mode 2 "Set new password"; types a new password and taps "Save password" → S3 with the banner "Password updated. Please log in." If the link is older than 1 hour, she sees "This link has expired. Request a new one." and repeats step 2
+4. Taps "Back to login" if she is still on S4 → S3
 
 **Ends when:** She logs in on S3 with the new password.
 
@@ -346,6 +365,32 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 3. To leave: taps "Logout" → S1 Welcome; or, to delete the account, taps "Delete account" → M4 Delete Account, then "Delete" → S1
 
 **Ends when:** The setting is saved, or the user is back on S1.
+
+### 7.2 Navigation map
+
+- **Logged out:** can open only S1, S2, S3, S4 and S11. Any other address goes to S1.
+- **Logged in, Admin:** opening S1-S4 goes to S5. Opening S9 goes to S5 with the message "You can't do that."
+- **Logged in, Member:** opening S1-S4 goes to S9. Opening S5-S8 goes to S9 with the message "You can't do that."
+- **Tabs:** Admin: Dashboard (S5), Members (S6), Plans (S8), Settings (S10). Member: Home (S9), Settings (S10).
+- **Back:** the Header back arrow goes to the previous screen. Pop-ups (M1-M6) close with the close icon, "Cancel" or a tap outside, and never save.
+
+```
+S1 Welcome ── Create account ──> S2 Sign Up ── Sign up ──> S3 Log In
+S1 Welcome ── Log in ──────────> S3 Log In
+S2 Sign Up ── Privacy Notice ──> S11 Privacy Notice
+S3 Log In ── Forgot password? ─> S4 Forgot Password ── Back to login ──> S3
+S4 (reset link in email) ──────> S4 "Set new password" ── Save password ──> S3
+S3 Log In ── Admin ────────────> S5 Admin Dashboard
+S3 Log In ── Member ───────────> S9 Member Dashboard
+S5 / S6 ── Member row ─────────> S7 Member Details
+S6 ── Add member ──────────────> M1 Member Form        S7 ── Edit ────────> M1
+S7 ── Record payment ──────────> M3 Record Payment     S7 ── Undo ────────> M6 Undo Payment
+S7 ── Delete member ───────────> M5 Delete Member ── Delete ──> S6
+S8 Plans ── Add plan / Plan card -> M2 Plan Form
+S10 Settings ── Privacy Notice -> S11     S10 ── Logout ──> S1
+S10 Settings ── Delete account -> M4 Delete Account ── Delete ──> S1
+Tabs: S5 - S6 - S8 - S10 (Admin);  S9 - S10 (Member)
+```
 
 ## 8. Screens
 
@@ -375,7 +420,7 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 
 ### 8.2 Screen specifications
 
-*Shared component names refer to Section 8.3. **Every screen** also has the Offline state (the Offline banner shows under the Header, the last loaded data stays visible and every save button is disabled) and the Error state (the text "Something went wrong. Try again." with a "Try again" button).*
+*Design rule: where the Stitch screens or prompts show something this PRD does not list ("Confirm Password" on S2, quick action buttons and a recent payment feed on S5, "Start date" on M1, "days remaining" on S9, notification preferences on S10, or different button names), the PRD wins and the extra is not built. Shared component names refer to Section 8.3. **Every screen** also has the Offline state (the Offline banner shows under the Header, the last loaded data stays visible and every save button is disabled) and the Error state (the text "Something went wrong. Try again." with a "Try again" button).*
 
 #### S1 Welcome
 
@@ -414,11 +459,12 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 
 |   |   |
 |---|---|
-| **Purpose** | Request a reset link. |
-| **Who / flow** | Logged out. S3 → S4 → S3. |
+| **Purpose** | Request a reset link (mode 1), then set a new password from the link in the email (mode 2). |
+| **Who / flow** | Logged out. S3 → S4 → S3. The email link opens S4 in mode 2. |
 | **Layout** | 1. Header: back arrow, title "Reset password"  2. Text "Enter your email and we'll send you a reset link."  3. Field "Email"  4. Primary button "Send link"  5. Link "Back to login" |
 | **Buttons** | "Send link" → shows the toast-sized message "If an account exists for this email, we've sent a reset link." and stays on S4; "Back to login" → S3. The link works for 1 hour. |
-| **States** | Normal; Loading (button spinner); Success (message above); Empty: not needed because it is a form. |
+| **Mode 2: Set new password** | Opened from the link in the reset email (valid for 1 hour). 1. Header: title "Set new password" (no back arrow)  2. Text "Choose a new password."  3. Field "New password" (eye icon shows or hides it; rules in Section 5)  4. Primary button "Save password". "Save password" → S3 with the banner "Password updated. Please log in." If the link is older than 1 hour or was already used, the text "This link has expired. Request a new one." and the link "Back to login" show instead of the field. If the password breaks the rules, the field shows "At least 8 characters, including a number." |
+| **States** | Normal; Loading (button spinner); Success (message above); Error (expired link, or the password rule message); Empty: not needed because it is a form. |
 | **Sample content** | Email "thando.m@example.com". |
 
 #### S5 Admin Dashboard
@@ -556,7 +602,7 @@ In-app only in v1. No push, email or SMS. The only emails sent are the account e
 |   |   |
 |---|---|
 | **Purpose / access** | Confirm undoing the latest Payment. Admin. S7 → M6 → S7. |
-| **Layout** | Confirmation pop-up with title "Undo this Payment?" and text "The paid until date goes back to 10 Oct 2026." Buttons: danger "Undo Payment", secondary "Cancel". |
+| **Layout** | Confirmation pop-up with title "Undo this Payment?" and text "The paid until date goes back to 10 Oct 2026." If this was the Member's first Payment, the text is "The Member goes back to No Payment yet." Buttons: danger "Undo Payment", secondary "Cancel". |
 | **Buttons** | "Undo Payment" → S7 with toast "Payment undone"; "Cancel" → closes |
 | **States** | Normal; Loading; Offline: "Undo Payment" disabled; Empty and Success: not needed because it is a confirmation. |
 
@@ -622,12 +668,15 @@ Used on every screen and in the seed data. Today is 28 Oct 2026 and the Grace pe
 
 ### 9.1 Look and brand
 
+*This table wins over the Stitch style guide wherever they differ (body text 16px, text colours #111827 and #4B5563, warning #7A4B00).*
+
 | Item | Your choice |
 |---|---|
 | **Look and feel (3 words)** | Clear, calm, trustworthy |
 | **Primary colour** | Navy #1F3A5F (buttons, active tab, headings; white text on it passes 4.5:1) |
 | **Secondary / accent colour** | Teal #0F766E (links, toggles, filter chips; white text on it passes 4.5:1) |
 | **Background colour** | Light grey #F5F7FA (screen) and white #FFFFFF (cards) |
+| **Border colour** | Light grey #CBD5E1 (inputs, dividers) |
 | **Main text colour** | Near-black #111827 |
 | **Secondary text colour** | Grey #4B5563 (passes 4.5:1 on both backgrounds) |
 | **Error / success / warning colours** | #C62828 / #2E7D32 / #7A4B00 |
@@ -734,7 +783,7 @@ Used on every screen and in the seed data. Today is 28 Oct 2026 and the Grace pe
 | months | Whole number | Yes | 1 | No | 1-12 (BR5) | - |
 | payment_date | Date | Yes | Today | No | Not in the future (BR5) | - |
 | previous_paid_until | Date | No | Empty | No | Saved by the app for Undo (BR6) | - |
-| recorded_by | Link to Profile | Yes | Current user | No | - | Clear the field |
+| recorded_by | Link to Profile | No | Current user | No | Empty if the Profile is deleted | Clear the field |
 | created_at | Date-time | Yes | Now | No | Used for the 24-hour Undo rule (BR6) | - |
 
 ### 10.2 Relationships
@@ -776,13 +825,14 @@ Used on every screen and in the seed data. Today is 28 Oct 2026 and the Grace pe
 | **Scheduled jobs** | None | Status is calculated when shown (BR3), so nothing needs to run on a timer |
 | **Hosting / demo** | Vercel (public URL) | Free tier; easy deploy from GitHub |
 | **Language and package manager** | TypeScript, npm, Node.js 20 LTS | Fewer type bugs |
-| **Testing** | Vitest for BR3, BR5, BR6 and BR7; manual checklist for all T- criteria | The Status and Payment calculations are the riskiest rules |
-| **Version control** | GitHub repository | Save this PRD as docs/PRD.md and MASTER.md in the root folder |
+| **Testing** | Vitest for BR3, BR5, BR6 and BR7; React Testing Library + jsdom for screens; pgTAP for the database and RLS; Playwright for the end-to-end flows; ESLint and secretlint for code and secret checks; manual checklist for all T- criteria | The Status and Payment calculations are the riskiest rules; every test level is covered |
+| **Icons and font** | `lucide-react` (Lucide icons) and `@fontsource/inter` (Inter) | Match Section 9.1 |
+| **Version control** | GitHub repository | Save this PRD as docs/PRD.md and the build plan as IMPLEMENTATION_PLAN.md in the root folder |
 
 |   |   |
 |---|---|
 | **11.2 Third-party services** | None. Supabase is the only external service, and its free tier is enough for the MVP (no paid or key-based service beyond Supabase's own keys). |
-| **11.3 How the parts connect** | The React app runs in the browser and talks to Supabase through the supabase-js client. Supabase Auth handles sign-up, log-in and password reset. The database stores Gyms, Profiles, Plans, Members and Payments, and RLS policies decide who can read or change each row. The app calculates Status (BR3), paid_until (BR5) and revenue (BR7) from the data it loads. |
+| **11.3 How the parts connect** | The React app runs in the browser and talks to Supabase through the supabase-js client. Supabase Auth handles sign-up, log-in and password reset. The database stores Gyms, Profiles, Plans, Members and Payments, and RLS policies decide who can read or change each row. The app calculates Status (BR3), paid_until (BR5) and revenue (BR7) from the data it loads. Deleting an account runs through the database function `delete_my_account()`; there are no server functions or Edge Functions. |
 
 ### 11.4 Permissions (Row-Level Security)
 
@@ -809,9 +859,11 @@ Used on every screen and in the seed data. Today is 28 Oct 2026 and the Grace pe
 |---|---|---|---|
 | VITE_SUPABASE_URL | Project address | Supabase dashboard → Project Settings → API | Public: safe in the app |
 | VITE_SUPABASE_ANON_KEY | Public (anon / publishable) key | Same | Public. Safe only because RLS is on for every table. |
-| SUPABASE_SERVICE_ROLE_KEY | Admin (service role / secret) key | Same | Secret: used only by the seed script; never in the app |
+| SUPABASE_URL | Project address as the seed script and tests see it | Same | Public |
+| SUPABASE_SERVICE_ROLE_KEY | Admin (service role / secret) key | Same | Secret: used only by the seed script and integration tests; never in the app |
+| SEED_TEST_PASSWORD | Test-only password for all seed accounts | You choose it | Secret |
 
-Real values live in a .env file that is never uploaded to GitHub. A .env.example file with the same names and placeholder values is committed.
+Real values live in a .env file (and a .env.hosted-test file for the second hosted project used in the final test run) that are never uploaded to GitHub: .gitignore contains `.env*` and `!.env.example`. A .env.example file with the same names and placeholder values is committed. The seed README says only where to set SEED_TEST_PASSWORD; it does not contain passwords.
 
 ### 11.6 Folder structure
 
@@ -822,11 +874,11 @@ Real values live in a .env file that is never uploaded to GitHub. A .env.example
 - **supabase/migrations/:** tables, RLS policies, signup and Member-linking functions
 - **supabase/seed/:** seed script and README with the test passwords
 - **tests/:** Vitest tests
-- **docs/PRD.md** and **MASTER.md**
+- **docs/PRD.md**, **IMPLEMENTATION_PLAN.md** (in the root folder) and **docs/designs/** (the Stitch screens exported as S1.png … S11.png and M1.png … M6.png)
 
 ### 11.7 Testing plan
 
-Every T- criterion is tested manually in Chrome on a phone-sized screen and on a laptop, using the checklist in MASTER.md. BR3 (Status), BR5 (paid until calculation), BR6 (Undo) and BR7 (revenue) get automated Vitest tests, including the 31 Jan case and the 3-day Grace period. Test accounts are from Section 10.4.
+Every T- criterion is tested manually in Chrome on a phone-sized screen and on a laptop, using the checklist in IMPLEMENTATION_PLAN.md (Section 15). BR3 (Status), BR5 (paid until calculation), BR6 (Undo) and BR7 (revenue) get automated Vitest tests, including the 31 Jan case and the 3-day Grace period. Test accounts are from Section 10.4.
 
 #### 5-minute demo script
 
@@ -881,6 +933,7 @@ Every T- criterion is tested manually in Chrome on a phone-sized screen and on a
 - **Consent:** on S2 the checkbox "I agree to the Privacy Notice" is unticked by default, with a link to S11. The Privacy Notice is also in the S10 menu.
 - **Privacy Notice:** S11 says what is collected, why, who sees it, where it is stored and how to delete it. It also says that when a Member deletes their account, the gym keeps the Member record and Payment records for its own financial records until the Admin deletes them.
 - **Under-18 users:** not allowed in v1. The minimum age is 18 (Section 5), and the Admin must confirm that each Member is 18 or older (BR2).
+- **Supabase region:** the region is chosen in Phase 10 when the hosted project is created, and the exact country sentence on S11 is written then.
 - **Data outside South Africa:** the Privacy Notice names the country of the Supabase region. If the region is outside South Africa, the notice says so.
 
 ## 13. Assumptions, risks, open questions and milestones
@@ -904,7 +957,7 @@ Every T- criterion is tested manually in Chrome on a phone-sized screen and on a
 
 |   |   |
 |---|---|
-| **13.3 Open questions** | None. (Every question was answered and moved into the right section.) |
+| **13.3 Open questions** | None. (The 18 clarifications from the implementation plan were answered on 4 Nov 2026 and moved into the right sections; see the Change log.) |
 
 ### 13.4 Milestones
 
@@ -913,9 +966,9 @@ Every T- criterion is tested manually in Chrome on a phone-sized screen and on a
 | M0: Idea submitted | App Concept Document (SDLC planning report) | To be added | Done (21 Oct 2026) |
 | M1: PRD approved | This PRD, Status = Approved, signed off by your facilitator | docs/PRD.md | 30 Oct 2026 |
 | M2: Design ready | Style guide and every screen in 8.1 generated and checked | To be added | 6 Nov 2026 |
-| M3: MASTER.md ready | Generated and checked against this PRD | MASTER.md | 9 Nov 2026 |
+| M3: IMPLEMENTATION_PLAN.md ready | Generated and checked against this PRD | IMPLEMENTATION_PLAN.md | 9 Nov 2026 |
 | M4: MVP built | F1-F5 working on a real device or URL | To be added | 4 Dec 2026 |
-| M5: Tested and demoed | Every T- test passed; demo script presented | Test checklist in MASTER.md | 11 Dec 2026 |
+| M5: Tested and demoed | Every T- test passed; demo script presented | Test checklist in IMPLEMENTATION_PLAN.md | 11 Dec 2026 |
 
 ## 15. Checklist sign-off
 
