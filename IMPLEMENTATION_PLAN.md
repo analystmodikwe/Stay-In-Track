@@ -7,10 +7,10 @@
 | Field | Value |
 | --- | --- |
 | App name | STAY IN TRACK |
-| Built from PRD version | v1.0 (Approved, 4 Nov 2026). Changes from v0.1 are listed in `PRD_CHANGE_LOG_v1.0.md` and in the PRD Change log. |
+| Built from PRD version | v1.0 (Approved, 4 Nov 2026). Changes from v0.1 are listed in the Change log of `docs/PRD.md`. |
 | Screen designs | Stitch project "STAY IN TRACK" (style guide + S1–S11 + M1–M6); exported PNGs in `docs/designs/` (one file per S# and M#, e.g. `S1.png`, `M3.png`) |
 | Plan version | v0.2 |
-| Repository | https://github.com/analystmodikwe/Stay-In-Track.git |
+| Repository | https://github.com/analystmodikwe/Stay-In-Track |
 | Status | Ready to build |
 | Last updated | 4 Nov 2026 |
 
@@ -1490,7 +1490,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 ## 18. Clarifications needed
 
-All 18 rows are **Answered** (4 Nov 2026). Each answer was the proposed answer from plan v0.1 and was adopted as the decision; the PRD was updated from v0.1 to v1.0 with a Change log row for each one that changed the PRD (see `PRD_CHANGE_LOG_v1.0.md`). Phase 1 can start.
+All 18 rows are **Answered** (4 Nov 2026). Each answer was the proposed answer from plan v0.1 and was adopted as the decision; the PRD was updated from v0.1 to v1.0 with a Change log row for each one that changed the PRD (see the Change log in `docs/PRD.md`). Phase 1 can start.
 
 | # | Question | Where (section / ID) | Answer | Status |
 | --- | --- | --- | --- | --- |
