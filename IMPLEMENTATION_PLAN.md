@@ -705,25 +705,25 @@ PRD 6.2 edge cases are numbered in table order: T-EDGE-1 offline Payment; T-EDGE
 | T-SETUP-3 | Integration | `tests/integration/health.test.ts` | The app's Supabase client connects to the local backend |
 | T-SETUP-4 | E2E | `tests/e2e/00_launch.spec.ts` | The app opens at 390px wide and S1 shows "Create account" |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] `npx supabase init`; `npx supabase start` works; pgTAP runs with `npx supabase test db`.
-- [ ] `src/lib/supabase.ts` creates the client from the `VITE_` variables only.
+- [x] `npx supabase init`; `npx supabase start` works; pgTAP runs with `npx supabase test db`.
+- [x] `src/lib/supabase.ts` creates the client from the `VITE_` variables only.
 
 **Step 3: Frontend (Green)**
 
-- [ ] Create the Vite + React 18.3 + TypeScript (strict) app. Add every library in Section 4.1. Set up Tailwind, Inter and Lucide.
-- [ ] `src/theme/tokens.ts` with every token in 7.1, wired into `tailwind.config.ts`.
-- [ ] Build the components listed under Covers (T-C-1 to T-C-11), with `useOnline` for offline detection.
-- [ ] Build S1 Welcome to `docs/designs/S1.png`, with React Router at `/`.
-- [ ] Add `.env.example`, `.gitignore` (contains `.env*` and `!.env.example`), `vercel.json`, the scripts `check`, `test`, `test:integration`, `seed` and `lint`, and a README with setup steps.
+- [x] Create the Vite + React 18.3 + TypeScript (strict) app. Add every library in Section 4.1. Set up Tailwind, Inter and Lucide.
+- [x] `src/theme/tokens.ts` with every token in 7.1, wired into `tailwind.config.ts`.
+- [x] Build the components listed under Covers (T-C-1 to T-C-11), with `useOnline` for offline detection.
+- [x] Build S1 Welcome to `docs/designs/S1.png`, with React Router at `/`.
+- [x] Add `.env.example`, `.gitignore` (contains `.env*` and `!.env.example`), `vercel.json`, the scripts `check`, `test`, `test:integration`, `seed` and `lint`, and a README with setup steps.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes. `npx playwright test tests/e2e/00_launch.spec.ts` passes (T-SETUP-4).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes. `npx playwright test tests/e2e/00_launch.spec.ts` passes (T-SETUP-4).
 
 **Step 5: Manual checks (human)**
 
@@ -732,12 +732,12 @@ PRD 6.2 edge cases are numbered in table order: T-EDGE-1 offline Payment; T-EDGE
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass (none yet; this is the first phase).
-- [ ] Every screen in this phase (S1) shows all its required states.
-- [ ] Exact installed versions are recorded in the Progress log.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass (none yet; this is the first phase).
+- [x] Every screen in this phase (S1) shows all its required states.
+- [x] Exact installed versions are recorded in the Progress log.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 1: Foundation`
 
@@ -1484,7 +1484,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 | Phase | Date | Status | Automated tests (passed / total) | Commit | Notes |
 | --- | --- | --- | --- | --- | --- |
-| — | — | Not started | — | — | — |
+| 1 | 8 Nov 2026 | Ready for manual check | 27 / 27 (25 vitest, 2 playwright) | Phase 1: Foundation | React 18.3.1, Vite 5.4.21, React Router 6.28.0, Tailwind CSS 3.4.14, Lucide React 0.456.0, Inter 5.0.0, Vitest 2.1.9, Playwright 1.58.2, Supabase JS 2.47.0 |
 
 ---
 
