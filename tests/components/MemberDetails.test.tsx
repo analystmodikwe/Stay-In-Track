@@ -129,5 +129,105 @@ describe('MemberDetails screen (S7)', () => {
       expect(screen.getByText('Members Screen')).toBeInTheDocument()
     })
   })
+
+  it('T-S7-2 displays "No Payments yet." when member has no payments', async () => {
+    vi.mocked(membersApi.getMemberWithPayments).mockResolvedValue({
+      data: { ...mockMember, payments: [] },
+      error: null,
+    })
+
+    renderMemberDetails()
+
+    await screen.findByRole('heading', { name: 'Thando Mokoena' })
+    expect(screen.getByText('No Payments yet.')).toBeInTheDocument()
+  })
+
+  it('T-S7-2 renders payment history rows newest first', async () => {
+    const twoPayments = [
+      {
+        id: 'pay-2',
+        gym_id: 'gym-1',
+        member_id: 'member-1',
+        amount: 350,
+        method: 'Cash' as const,
+        months: 1,
+        payment_date: '2026-10-26',
+        previous_paid_until: '2026-09-26',
+        recorded_by: 'admin-1',
+        created_at: new Date(Date.now() - 3600000).toISOString(), // 1h ago
+      },
+      {
+        id: 'pay-1',
+        gym_id: 'gym-1',
+        member_id: 'member-1',
+        amount: 350,
+        method: 'Cash' as const,
+        months: 1,
+        payment_date: '2026-09-26',
+        previous_paid_until: null,
+        recorded_by: 'admin-1',
+        created_at: new Date(Date.now() - 86400000 * 30).toISOString(), // 30 days ago
+      },
+    ]
+
+    vi.mocked(membersApi.getMemberWithPayments).mockResolvedValue({
+      data: { ...mockMember, payments: twoPayments },
+      error: null,
+    })
+
+    renderMemberDetails()
+
+    await screen.findByRole('heading', { name: 'Thando Mokoena' })
+
+    // Check payment history items
+    expect(screen.getAllByText(/26 Oct 2026/).length).toBeGreaterThanOrEqual(2)
+    expect(screen.getByText(/26 Sept? 2026/i)).toBeInTheDocument()
+
+    // Latest payment (< 24h) has Undo button
+    // T-EDGE-7: older payment does NOT have Undo button
+    const undoButtons = screen.getAllByRole('button', { name: /undo/i })
+    expect(undoButtons).toHaveLength(1)
+  })
+
+  it('T-US9-2 does not show Undo button if latest payment is older than 24 hours', async () => {
+    const oldPayment = [
+      {
+        id: 'pay-old',
+        gym_id: 'gym-1',
+        member_id: 'member-1',
+        amount: 350,
+        method: 'Cash' as const,
+        months: 1,
+        payment_date: '2026-09-26',
+        previous_paid_until: null,
+        recorded_by: 'admin-1',
+        created_at: new Date(Date.now() - 86400000 * 2).toISOString(), // 48h ago
+      },
+    ]
+
+    vi.mocked(membersApi.getMemberWithPayments).mockResolvedValue({
+      data: { ...mockMember, payments: oldPayment },
+      error: null,
+    })
+
+    renderMemberDetails()
+
+    await screen.findByRole('heading', { name: 'Thando Mokoena' })
+    expect(screen.queryByRole('button', { name: /undo/i })).not.toBeInTheDocument()
+  })
+
+  it('clicking Record payment opens M3 modal', async () => {
+    vi.mocked(membersApi.getMemberWithPayments).mockResolvedValue({
+      data: mockMember,
+      error: null,
+    })
+
+    renderMemberDetails()
+
+    await screen.findByRole('heading', { name: 'Thando Mokoena' })
+    fireEvent.click(screen.getByRole('button', { name: 'Record payment' }))
+
+    expect(screen.getByRole('heading', { name: 'Record payment' })).toBeInTheDocument()
+  })
 })
 

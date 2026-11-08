@@ -8,6 +8,9 @@ import { Button } from '../components/Button'
 import { Toast } from '../components/Toast'
 import { MemberFormModal } from '../modals/MemberForm'
 import { DeleteMemberModal } from '../modals/DeleteMember'
+import { RecordPaymentModal } from '../modals/RecordPayment'
+import { UndoPaymentModal } from '../modals/UndoPayment'
+import { PaymentRow, PaymentItem } from '../components/PaymentRow'
 import {
   getMemberWithPayments,
   updateMember,
@@ -15,6 +18,7 @@ import {
   MemberWithDetails,
 } from '../lib/api/members'
 import { getPlans, Plan } from '../lib/api/plans'
+import { canUndo } from '../lib/payments'
 import { formatMoney, formatDate, formatPhone } from '../lib/format'
 import { messages } from '../lib/messages'
 import { useOnline } from '../hooks/useOnline'
@@ -31,6 +35,8 @@ export function MemberDetails() {
 
   const [showEditModal, setShowEditModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showRecordPaymentModal, setShowRecordPaymentModal] = useState(false)
+  const [selectedPaymentForUndo, setSelectedPaymentForUndo] = useState<PaymentItem | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
@@ -87,6 +93,10 @@ export function MemberDetails() {
       navigate('/members', { state: { toast: messages.memberDeleted } })
     }
   }
+
+  const latestPaymentId = member?.payments && member.payments.length > 0
+    ? member.payments[0].id
+    : ''
 
   return (
     <div className="min-h-screen bg-background flex flex-col pb-10">
@@ -150,7 +160,7 @@ export function MemberDetails() {
               <Button
                 variant="primary"
                 disabled={!isOnline}
-                onClick={() => {}}
+                onClick={() => setShowRecordPaymentModal(true)}
                 className="w-full"
               >
                 Record payment
@@ -171,12 +181,18 @@ export function MemberDetails() {
               {member.payments.length === 0 ? (
                 <p className="text-body text-text-secondary">No Payments yet.</p>
               ) : (
-                <div className="divide-y divide-border">
-                  {member.payments.map((p) => (
-                    <div key={p.id} className="py-2 text-body">
-                      <span>{p.payment_date} - {formatMoney(p.amount)} ({p.method})</span>
-                    </div>
-                  ))}
+                <div className="flex flex-col gap-3">
+                  {member.payments.map((p) => {
+                    const undoEligible = canUndo(p, latestPaymentId)
+                    return (
+                      <PaymentRow
+                        key={p.id}
+                        payment={p}
+                        canUndo={undoEligible}
+                        onUndo={() => setSelectedPaymentForUndo(p)}
+                      />
+                    )
+                  })}
                 </div>
               )}
             </section>
@@ -205,6 +221,36 @@ export function MemberDetails() {
           onSave={handleUpdate}
         />
       )}
+
+      {member && (
+        <RecordPaymentModal
+          isOpen={showRecordPaymentModal}
+          member={{
+            id: member.id,
+            full_name: member.full_name,
+            plan_id: member.plan_id,
+            plan_price: member.plan.price,
+            paid_until: member.paid_until,
+            status: member.status,
+          }}
+          onClose={() => setShowRecordPaymentModal(false)}
+          onSuccess={async () => {
+            setToastMessage(messages.paymentRecorded)
+            await loadData()
+          }}
+        />
+      )}
+
+      <UndoPaymentModal
+        isOpen={Boolean(selectedPaymentForUndo)}
+        payment={selectedPaymentForUndo}
+        onClose={() => setSelectedPaymentForUndo(null)}
+        onSuccess={async () => {
+          setToastMessage(messages.paymentUndone)
+          setSelectedPaymentForUndo(null)
+          await loadData()
+        }}
+      />
 
       <DeleteMemberModal
         isOpen={showDeleteModal}

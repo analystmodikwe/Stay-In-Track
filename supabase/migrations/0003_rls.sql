@@ -165,12 +165,7 @@ create policy "payments_delete" on public.payments
     gym_id = public.current_gym_id()
     and public.is_admin()
     and created_at >= (now() - interval '24 hours')
-    and id = (
-      select p.id from public.payments p
-      where p.member_id = payments.member_id
-      order by p.created_at desc
-      limit 1
-    )
+    and public.is_latest_payment(id, member_id)
   );
 
 -- SEC16: No update policy on payments (payments are never edited, BR6)

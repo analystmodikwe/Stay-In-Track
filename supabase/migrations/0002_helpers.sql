@@ -54,3 +54,22 @@ as $$
   end;
 $$;
 
+-- Check if a payment is the latest payment for a member (security definer to avoid RLS recursion)
+create or replace function public.is_latest_payment(
+  p_payment_id uuid,
+  p_member_id uuid
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select p_payment_id = (
+    select id from public.payments
+    where member_id = p_member_id
+    order by created_at desc
+    limit 1
+  );
+$$;
+

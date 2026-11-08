@@ -1103,22 +1103,22 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-INT-2 | Integration | `members.int.test.ts` | OP13 returns the Member with Payments newest first; a user of another gym gets nothing |
 | T-E2E-3 | E2E | `tests/e2e/03_record_payment.spec.ts` | Flow 3: Admin records a Payment for Thando, then undoes it |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] No new migrations (`record_payment`, `undo_payment`, triggers and policies exist from Phase 2).
+- [x] No new migrations (`record_payment`, `undo_payment`, triggers and policies exist from Phase 2; helper `is_latest_payment` added to eliminate RLS recursion on payment delete).
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/payments.ts`, `src/lib/rules/payment.ts`, `src/lib/api/payments.ts`.
-- [ ] M3 Record Payment (with live "New paid until date" pill and session-expired handling), M6 Undo Payment, PaymentRow, and the Payment history block on S7. Build each to its design with every state.
+- [x] `src/lib/payments.ts`, `src/lib/rules/payment.ts`, `src/lib/api/payments.ts`.
+- [x] M3 Record Payment (with live "New paid until date" pill and session-expired handling), M6 Undo Payment, PaymentRow, and the Payment history block on S7. Build each to its design with every state.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
-- [ ] `npx playwright test tests/e2e/03_record_payment.spec.ts` passes (T-E2E-3: Flow 3, record a Payment for Thando, then undo it).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] `npx playwright test tests/e2e/03_record_payment.spec.ts` passes (T-E2E-3: Flow 3, record a Payment for Thando, then undo it).
 
 **Step 5: Manual checks (human)**
 
@@ -1127,11 +1127,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S7 (Payments), M3 and M6) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S7 (Payments), M3 and M6) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 6: Payments (F3)`
 
@@ -1489,6 +1489,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 3 | 8 Nov 2026 | Ready for manual check | 158 / 158 (85 vitest unit/comp, 9 vitest int, 2 playwright E2E, 62 pgTAP) | Phase 3: Accounts (F1) | Auth rules, API, S2, S3, S4, S10 (shell), S11, M4, route guards, TabBar/SideMenu |
 | 4 | 8 Nov 2026 | Ready for manual check | 178 / 178 (104 vitest unit/comp, 12 vitest int, 62 pgTAP) | Phase 4: Plans and Grace period (F3) | Rules BR1/BR4, Plans & Gym API, S8 Plans, M2 Plan Form, Admin Grace period block on S10 |
 | 5 | 8 Nov 2026 | Ready for manual check | 217 / 217 (130 vitest unit/comp, 19 vitest int, 6 playwright E2E, 62 pgTAP) | Phase 5: Member management (F2, US3) | Rules BR2, status SAST, Members API, S2 member signup, S6 Members list, S7 Member Details, M1 Member Form, M5 Delete Member |
+| 6 | 8 Nov 2026 | Ready for manual check | 250 / 250 (158 vitest unit/comp, 22 vitest int, 8 playwright E2E, 62 pgTAP) | Phase 6: Payments (F3) | Rules BR5/BR6, Payments API, M3 Record Payment, M6 Undo Payment, PaymentRow, S7 Payment history |
 
 ---
 
