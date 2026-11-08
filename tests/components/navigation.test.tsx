@@ -77,8 +77,8 @@ describe('T-NAV-2 Navigation — role guards', () => {
       loading: false,
     })
     renderAt('/')
-    // Should land on the Admin Dashboard placeholder
-    expect(screen.getByText(/admin dashboard/i)).toBeInTheDocument()
+    // Should land on the Admin Dashboard
+    expect(screen.getByRole('heading', { name: /^dashboard$/i })).toBeInTheDocument()
   })
 
   it('T-NAV-2b Member opening S1 → redirects to /home', () => {

@@ -1165,22 +1165,22 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-C-14 | Component | `StatCard.test.tsx` | Label and large number (28px bold); not tappable |
 | T-E2E-4 | E2E | `tests/e2e/04_entrance_and_dashboard.spec.ts` | Flows 4 and 5: search "tha" shows Grace period; the Dashboard shows the counts and revenue |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] No new migrations (`list_members` and `get_dashboard` exist from Phase 2).
+- [x] No new migrations (`list_members` and `get_dashboard` exist from Phase 2; query nesting and key collision resolved in `0005_functions.sql`).
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/revenue.ts`; `src/lib/api/dashboard.ts`; update `src/lib/api/members.ts` for search and filters.
-- [ ] S6 search field ("Search by name or email"), filter chips, paging; S5 Admin Dashboard with StatCards (2 columns on phone, 3 on tablet, 5 on desktop), Members per Plan, Overdue Members list. Build each to its design with every state.
+- [x] `src/lib/revenue.ts`; `src/lib/api/dashboard.ts`; update `src/lib/api/members.ts` for search and filters.
+- [x] S6 search field ("Search by name or email"), filter chips, paging; S5 Admin Dashboard with StatCards (2 columns on phone, 3 on tablet, 5 on desktop), Members per Plan, Overdue Members list. Build each to its design with every state.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
-- [ ] `npx playwright test tests/e2e/04_entrance_and_dashboard.spec.ts` passes (T-E2E-4: Flows 4 and 5).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] `npx playwright test tests/e2e/04_entrance_and_dashboard.spec.ts` passes (T-E2E-4: Flows 4 and 5).
 
 **Step 5: Manual checks (human)**
 
@@ -1189,11 +1189,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S6 (search, filters) and S5) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S6 (search, filters) and S5) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 7: Entrance check and Dashboard (F4, F5)`
 
@@ -1403,43 +1403,43 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 ## 15. Acceptance test checklist
 
-- [ ] T-US1-1: Admin sign-up succeeds → S3 with verify banner (automated)
-- [ ] T-US1-2: existing email message (automated)
-- [ ] T-US1-3: disabled "Sign up" + password error (automated)
-- [ ] T-US2-1: log in → S5 (Admin) or S9 (Member) (automated)
-- [ ] T-US2-2: unverified email message and "Resend email" (automated)
-- [ ] T-US2-3: reset message never reveals accounts (automated)
-- [ ] T-US2-4: too many attempts message, "Login" disabled (automated)
-- [ ] T-US2-5: set a new password from the reset link (automated; Section 18 #1)
-- [ ] T-US3-1: Member sign-up links to the Member record (automated)
-- [ ] T-US3-2: email not found at any gym (automated)
-- [ ] T-US4-1: Admin deletes account and gym data (automated)
-- [ ] T-US4-2: Member deletes login, record stays (automated)
-- [ ] T-US4-3: delete disabled offline (automated)
-- [ ] T-US5-1: add Member → "Member added", badge "Overdue" (automated)
-- [ ] T-US5-2: duplicate Member email (automated)
-- [ ] T-US5-3: 500 Member limit (automated)
-- [ ] T-US6-1: edit Member (automated)
-- [ ] T-US6-2: delete Member and Payments (automated)
-- [ ] T-US6-3: email disabled after Member signs up (automated)
-- [ ] T-US6-4: removed-record message on log-in (automated)
-- [ ] T-US7-1: create Plan (automated)
-- [ ] T-US7-2: duplicate Plan name (automated)
-- [ ] T-US7-3: Plan price limits (automated)
-- [ ] T-US8-1: record Payment → Active (automated)
-- [ ] T-US8-2: 2-month Payment → 15 Jan 2027 (automated)
-- [ ] T-US8-3: future payment date (automated)
-- [ ] T-US8-4: amount limits (automated)
-- [ ] T-US9-1: undo latest Payment (automated)
-- [ ] T-US9-2: no "Undo" when older than 24 hours or not latest (automated)
-- [ ] T-US10-1: save Grace period → status updates (automated)
-- [ ] T-US10-2: Grace period 0–14 message (automated)
-- [ ] T-US11-1: search "tha" → Grace period badge within 3 seconds (automated)
-- [ ] T-US11-2: filter "Overdue" (automated)
-- [ ] T-US11-3: no search results message (automated)
-- [ ] T-US12-1: Dashboard numbers for the sample data (automated)
-- [ ] T-US12-2: Overdue row opens S7 (automated)
-- [ ] T-US12-3: empty Dashboard (automated)
+- [x] T-US1-1: Admin sign-up succeeds → S3 with verify banner (automated)
+- [x] T-US1-2: existing email message (automated)
+- [x] T-US1-3: disabled "Sign up" + password error (automated)
+- [x] T-US2-1: log in → S5 (Admin) or S9 (Member) (automated)
+- [x] T-US2-2: unverified email message and "Resend email" (automated)
+- [x] T-US2-3: reset message never reveals accounts (automated)
+- [x] T-US2-4: too many attempts message, "Login" disabled (automated)
+- [x] T-US2-5: set a new password from the reset link (automated; Section 18 #1)
+- [x] T-US3-1: Member sign-up links to the Member record (automated)
+- [x] T-US3-2: email not found at any gym (automated)
+- [x] T-US4-1: Admin deletes account and gym data (automated)
+- [x] T-US4-2: Member deletes login, record stays (automated)
+- [x] T-US4-3: delete disabled offline (automated)
+- [x] T-US5-1: add Member → "Member added", badge "Overdue" (automated)
+- [x] T-US5-2: duplicate Member email (automated)
+- [x] T-US5-3: 500 Member limit (automated)
+- [x] T-US6-1: edit Member (automated)
+- [x] T-US6-2: delete Member and Payments (automated)
+- [x] T-US6-3: email disabled after Member signs up (automated)
+- [x] T-US6-4: removed-record message on log-in (automated)
+- [x] T-US7-1: create Plan (automated)
+- [x] T-US7-2: duplicate Plan name (automated)
+- [x] T-US7-3: Plan price limits (automated)
+- [x] T-US8-1: record Payment → Active (automated)
+- [x] T-US8-2: 2-month Payment → 15 Jan 2027 (automated)
+- [x] T-US8-3: future payment date (automated)
+- [x] T-US8-4: amount limits (automated)
+- [x] T-US9-1: undo latest Payment (automated)
+- [x] T-US9-2: no "Undo" when older than 24 hours or not latest (automated)
+- [x] T-US10-1: save Grace period → status updates (automated)
+- [x] T-US10-2: Grace period 0–14 message (automated)
+- [x] T-US11-1: search "tha" → Grace period badge within 3 seconds (automated)
+- [x] T-US11-2: filter "Overdue" (automated)
+- [x] T-US11-3: no search results message (automated)
+- [x] T-US12-1: Dashboard numbers for the sample data (automated)
+- [x] T-US12-2: Overdue row opens S7 (automated)
+- [x] T-US12-3: empty Dashboard (automated)
 - [ ] T-US13-1: Member Dashboard shows Status, Plan, Benefits, history (automated)
 - [ ] T-US13-2: Overdue banner (automated)
 - [ ] T-US13-3: "No Payments yet." (automated)
@@ -1447,16 +1447,16 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 - [ ] T-US14-2: reminders off → banner hidden (automated)
 - [ ] T-US14-3: reminders switch disabled offline (automated)
 - [ ] T-US14-4: Grace period banner shows with reminders off (automated)
-- [ ] T-EDGE-1: Payment while offline (automated)
-- [ ] T-EDGE-2: session expires in M3 (automated)
-- [ ] T-EDGE-3: Grace period 3 → 0 (automated)
+- [x] T-EDGE-1: Payment while offline (automated)
+- [x] T-EDGE-2: session expires in M3 (automated)
+- [x] T-EDGE-3: Grace period 3 → 0 (automated)
 - [ ] T-EDGE-4: Member signs up before being added (automated)
-- [ ] T-EDGE-5: Payment on 31 Jan → 28 Feb 2027 (automated)
+- [x] T-EDGE-5: Payment on 31 Jan → 28 Feb 2027 (automated)
 - [ ] T-EDGE-6: Member record deleted while viewing S9 (automated)
-- [ ] T-EDGE-7: no Undo on an older Payment (automated)
+- [x] T-EDGE-7: no Undo on an older Payment (automated)
 - [ ] T-EDGE-8: two Admin browsers, last saved wins (automated)
-- [ ] T-AUTH-1: password rule (automated)
-- [ ] T-AUTH-2: signed out after 30 days (automated)
+- [x] T-AUTH-1: password rule (automated)
+- [x] T-AUTH-2: signed out after 30 days (automated)
 - [ ] T-NFR-10: 3-second load on mobile data (manual)
 - [ ] T-NFR-11: Chrome, Edge, Safari and 360px screens (manual)
 - [ ] G2: stopwatch test, 5 testers, 10 seconds or less (manual)
@@ -1490,6 +1490,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 4 | 8 Nov 2026 | Ready for manual check | 178 / 178 (104 vitest unit/comp, 12 vitest int, 62 pgTAP) | Phase 4: Plans and Grace period (F3) | Rules BR1/BR4, Plans & Gym API, S8 Plans, M2 Plan Form, Admin Grace period block on S10 |
 | 5 | 8 Nov 2026 | Ready for manual check | 217 / 217 (130 vitest unit/comp, 19 vitest int, 6 playwright E2E, 62 pgTAP) | Phase 5: Member management (F2, US3) | Rules BR2, status SAST, Members API, S2 member signup, S6 Members list, S7 Member Details, M1 Member Form, M5 Delete Member |
 | 6 | 8 Nov 2026 | Ready for manual check | 250 / 250 (158 vitest unit/comp, 22 vitest int, 8 playwright E2E, 62 pgTAP) | Phase 6: Payments (F3) | Rules BR5/BR6, Payments API, M3 Record Payment, M6 Undo Payment, PaymentRow, S7 Payment history |
+| 7 | 8 Nov 2026 | Ready for manual check | 266 / 266 (169 vitest unit/comp, 25 vitest int, 10 playwright E2E, 62 pgTAP) | Phase 7: Entrance check and Dashboard (F4, F5) | Rules BR7/BR9, Dashboard API, S6 search and filters, S5 Admin Dashboard with StatCards & Members per Plan |
 
 ---
 

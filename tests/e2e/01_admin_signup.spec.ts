@@ -72,6 +72,6 @@ test.describe('Flow 1 (part 1) - Admin Sign-up & Login', () => {
 
     // 8. Reach S5 (Dashboard placeholder)
     await expect(page).toHaveURL(/.*dashboard/)
-    await expect(page.getByText(/admin dashboard/i)).toBeVisible()
+    await expect(page.getByRole('heading', { name: /^dashboard$/i })).toBeVisible()
   })
 })

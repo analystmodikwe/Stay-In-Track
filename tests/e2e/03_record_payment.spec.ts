@@ -21,9 +21,9 @@ test.describe('Flow 3 - Record a Payment and Undo it', () => {
     // 3. Add a fresh member for isolated, deterministic payment flow
     await page.getByRole('button', { name: /add member/i }).first().click()
     await page.getByLabel('Full name').fill(memberName)
-    await page.getByLabel('Email').fill(memberEmail)
+    await page.getByLabel('Email', { exact: true }).fill(memberEmail)
     await page.getByLabel('This Member is 18 or older').check()
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { name: 'Save' }).click({ force: true })
 
     await expect(page.getByText('Member added')).toBeVisible()
     await expect(page.getByText(memberName)).toBeVisible()

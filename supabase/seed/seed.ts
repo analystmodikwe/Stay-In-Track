@@ -23,6 +23,24 @@ const supabase = createClient(supabaseUrl, serviceRoleKey, {
 async function seed() {
   console.log('Seeding STAY IN TRACK sample data...')
 
+  // Clean up existing sample users and gyms if re-seeding
+  const { data: existingUsers } = await supabase.auth.admin.listUsers()
+  if (existingUsers?.users) {
+    const seedEmails = [
+      'sipho@ironhaven.example.com',
+      'naledi.k@example.com',
+      'thando.m@example.com',
+      'lerato.m@example.com',
+      'bheki.s@example.com',
+    ]
+    for (const u of existingUsers.users) {
+      if (u.email && seedEmails.includes(u.email)) {
+        await supabase.auth.admin.deleteUser(u.id)
+      }
+    }
+  }
+  await supabase.from('gyms').delete().eq('name', 'Iron Haven Gym')
+
   // 1. Create Admin Auth User: sipho@ironhaven.example.com
   // The handle_new_user trigger creates Iron Haven Gym and the admin profile!
   const adminEmail = 'sipho@ironhaven.example.com'

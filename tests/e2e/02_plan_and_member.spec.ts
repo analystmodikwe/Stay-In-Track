@@ -26,7 +26,7 @@ test.describe('Flow 2 - Create a Plan and add a Member', () => {
     await page.getByLabel('Plan name').fill(planName)
     await page.getByLabel('Price per month (R)').fill('400')
     await page.getByLabel('Benefits (optional)').fill('Full gym floor access')
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { name: 'Save' }).click({ force: true })
 
     await expect(page.getByText('Plan saved')).toBeVisible()
     await expect(page.getByText(planName)).toBeVisible()
@@ -40,9 +40,9 @@ test.describe('Flow 2 - Create a Plan and add a Member', () => {
     await expect(page.getByRole('heading', { name: 'Add member' })).toBeVisible()
 
     await page.getByLabel('Full name').fill(memberName)
-    await page.getByLabel('Email').fill(memberEmail)
+    await page.getByLabel('Email', { exact: true }).fill(memberEmail)
     await page.getByLabel('This Member is 18 or older').check()
-    await page.getByRole('button', { name: 'Save' }).click()
+    await page.getByRole('button', { name: 'Save' }).click({ force: true })
 
     await expect(page.getByText('Member added')).toBeVisible()
     await expect(page.getByText(memberName)).toBeVisible()

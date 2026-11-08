@@ -254,18 +254,23 @@ begin
   select coalesce(
     jsonb_agg(
       jsonb_build_object(
-        'plan_id', p.id,
-        'plan_name', p.name,
-        'member_count', count(m.id)
-      ) order by p.name asc
+        'plan_id', sub.id,
+        'plan_name', sub.name,
+        'name', sub.name,
+        'member_count', sub.member_count,
+        'count', sub.member_count
+      ) order by sub.name asc
     ),
     '[]'::jsonb
   )
   into v_plans
-  from public.plans p
-  left join public.members m on m.plan_id = p.id
-  where p.gym_id = v_gym_id
-  group by p.id, p.name;
+  from (
+    select p.id, p.name, count(m.id) as member_count
+    from public.plans p
+    left join public.members m on m.plan_id = p.id
+    where p.gym_id = v_gym_id
+    group by p.id, p.name
+  ) sub;
 
   -- First 5 overdue members
   select coalesce(
@@ -291,13 +296,19 @@ begin
   join public.plans p on p.id = m.plan_id;
 
   return jsonb_build_object(
+    'total', v_total,
     'total_members', v_total,
+    'active', v_active,
     'active_members', v_active,
+    'grace', v_grace,
     'grace_members', v_grace,
-    'overdue_members', v_overdue,
+    'overdue', v_overdue,
+    'overdue_count', v_overdue,
+    'revenue', v_revenue,
     'revenue_this_month', v_revenue,
+    'plans', v_plans,
     'members_per_plan', v_plans,
-    'overdue_members', v_overdue_list
+    'overdue_list', v_overdue_list
   );
 end;
 $$;

@@ -150,5 +150,75 @@ describe('Members screen (S6, T-S6-1)', () => {
       expect(screen.getByText(messages.memberAdded)).toBeInTheDocument()
     })
   })
+
+  it('T-US11-1 & T-BR9-3 searches members when typing >= 2 chars', async () => {
+    vi.mocked(membersApi.listMembers).mockResolvedValueOnce({
+      data: mockMembersList,
+      error: null,
+    }).mockResolvedValueOnce({
+      data: [mockMembersList[1]], // Thando
+      error: null,
+    })
+
+    renderMembers()
+
+    await screen.findByText('Naledi Khumalo')
+
+    const searchInput = screen.getByPlaceholderText(/search by name or email/i)
+    fireEvent.change(searchInput, { target: { value: 'th' } })
+
+    await waitFor(() => {
+      expect(membersApi.listMembers).toHaveBeenCalledWith(
+        expect.objectContaining({ search: 'th' })
+      )
+    })
+  })
+
+  it('T-US11-2 & T-BR9-4 filters members by status chips', async () => {
+    vi.mocked(membersApi.listMembers).mockResolvedValueOnce({
+      data: mockMembersList,
+      error: null,
+    }).mockResolvedValueOnce({
+      data: [mockMembersList[1]],
+      error: null,
+    })
+
+    renderMembers()
+
+    await screen.findByText('Naledi Khumalo')
+
+    // Find and click "Grace period" filter chip
+    const graceChip = screen.getByRole('button', { name: /^grace period$/i })
+    fireEvent.click(graceChip)
+
+    await waitFor(() => {
+      expect(membersApi.listMembers).toHaveBeenCalledWith(
+        expect.objectContaining({ status: 'grace' })
+      )
+    })
+  })
+
+  it('T-US11-3 displays "No Members found. Check the spelling or tap Add member." when search has no match', async () => {
+    vi.mocked(membersApi.listMembers).mockResolvedValueOnce({
+      data: mockMembersList,
+      error: null,
+    }).mockResolvedValueOnce({
+      data: [],
+      error: null,
+    })
+
+    renderMembers()
+
+    await screen.findByText('Naledi Khumalo')
+
+    const searchInput = screen.getByPlaceholderText(/search by name or email/i)
+    fireEvent.change(searchInput, { target: { value: 'zzzzz' } })
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('No Members found. Check the spelling or tap Add member.')
+      ).toBeInTheDocument()
+    })
+  })
 })
 
