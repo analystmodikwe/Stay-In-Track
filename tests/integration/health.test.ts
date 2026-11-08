@@ -8,6 +8,7 @@ describe('T-SETUP-3 Supabase local health check', () => {
     const client = createClient(url, key, {
       auth: { persistSession: false },
     })
+    expect(client).toBeDefined()
 
     try {
       const controller = new AbortController()
