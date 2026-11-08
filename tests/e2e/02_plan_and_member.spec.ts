@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Flow 2 - Create a Plan and add a Member', () => {
-  const timestamp = Date.now()
-  const planName = `E2E Plan ${timestamp}`
-  const memberName = `E2E Member ${timestamp}`
-  const memberEmail = `e2e_member_${timestamp}@example.com`
+  test('T-E2E-2 Admin logs in, creates a Plan, and adds a Member', async ({ page }, testInfo) => {
+    const timestamp = `${Date.now()}_${testInfo.parallelIndex}`
+    const planName = `E2E Plan ${timestamp}`
+    const memberName = `E2E Member ${timestamp}`
+    const memberEmail = `e2e_member_${timestamp}@example.com`
 
-  test('T-E2E-2 Admin logs in, creates a Plan, and adds a Member', async ({ page }) => {
     // 1. Log in as seed Admin
     await page.goto('/log-in')
     await page.getByLabel(/email/i).fill('sipho@ironhaven.example.com')

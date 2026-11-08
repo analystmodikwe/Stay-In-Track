@@ -21,6 +21,20 @@ describe('Admin Dashboard integration tests (OP20)', () => {
       password: seedPassword,
     })
     expect(error).toBeNull()
+
+    const seedEmails = [
+      'naledi.k@example.com',
+      'johan.vdm@example.com',
+      'thando.m@example.com',
+      'ayesha.p@example.com',
+    ]
+    const { data: allMembers } = await client.from('members').select('id, email')
+    if (allMembers) {
+      const extra = allMembers.filter((m) => !seedEmails.includes(m.email))
+      for (const m of extra) {
+        await client.from('members').delete().eq('id', m.id)
+      }
+    }
   })
 
   it('T-US12-1: get_dashboard returns exact sample metrics for 2026-10-28', async () => {

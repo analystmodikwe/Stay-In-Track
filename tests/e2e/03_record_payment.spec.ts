@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test'
 
 test.describe('Flow 3 - Record a Payment and Undo it', () => {
-  test('T-E2E-3 Admin records a Payment and undoes it', async ({ page }) => {
-    const timestamp = Date.now()
+  test('T-E2E-3 Admin records a Payment and undoes it', async ({ page }, testInfo) => {
+    const timestamp = `${Date.now()}_${testInfo.parallelIndex}`
     const memberName = `Payment Test Member ${timestamp}`
     const memberEmail = `pay_test_${timestamp}@example.com`
 

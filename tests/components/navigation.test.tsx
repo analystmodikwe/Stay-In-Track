@@ -87,7 +87,7 @@ describe('T-NAV-2 Navigation — role guards', () => {
       loading: false,
     })
     renderAt('/')
-    expect(screen.getByText(/member dashboard/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /my membership/i })).toBeInTheDocument()
   })
 
   it('T-NAV-2c Admin opening /home → redirects to /dashboard with "You can\'t do that."', () => {

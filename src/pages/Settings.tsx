@@ -13,10 +13,12 @@ import { TabBar } from '../components/TabBar'
 import { OfflineBanner } from '../components/OfflineBanner'
 import { TextField } from '../components/TextField'
 import { Button } from '../components/Button'
+import { Toggle } from '../components/Toggle'
 import { Toast } from '../components/Toast'
 import { DeleteAccount } from '../modals/DeleteAccount'
 import { logOut } from '../lib/api/auth'
 import { getGym, updateGracePeriod } from '../lib/api/gym'
+import { getOwnMembership, setReminders } from '../lib/api/member'
 import { validateGraceDays } from '../lib/rules/grace'
 import { messages } from '../lib/messages'
 import { useSession } from '../hooks/useSession'
@@ -43,6 +45,9 @@ export function Settings() {
   const [savingGrace, setSavingGrace] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
+  // Reminders state (Member only)
+  const [remindersOn, setRemindersOn] = useState(true)
+
   useEffect(() => {
     if (role === 'admin') {
       getGym()
@@ -52,8 +57,28 @@ export function Settings() {
           }
         })
         .catch(() => {})
+    } else if (role === 'member') {
+      getOwnMembership()
+        ?.then((res) => {
+          if (res?.data) {
+            setRemindersOn(res.data.reminders_on)
+          }
+        })
+        .catch(() => {})
     }
   }, [role])
+
+  async function handleToggleReminders(e: React.ChangeEvent<HTMLInputElement>) {
+    const on = e.target.checked
+    setRemindersOn(on)
+    const res = await setReminders(on)
+    if (res.error) {
+      setRemindersOn(!on)
+      setToastMessage(res.error)
+    } else {
+      setToastMessage(on ? messages.remindersOn : messages.remindersOff)
+    }
+  }
 
   async function handleLogout() {
     setLogoutLoading(true)
@@ -125,6 +150,19 @@ export function Settings() {
                 Save
               </Button>
             </form>
+          </section>
+        )}
+
+        {/* Payment reminders toggle (Member only) */}
+        {role === 'member' && (
+          <section className="bg-white rounded-xl shadow-sm p-4">
+            <Toggle
+              id="reminders-toggle"
+              label="Payment reminders"
+              checked={remindersOn}
+              disabled={!isOnline}
+              onChange={handleToggleReminders}
+            />
           </section>
         )}
 

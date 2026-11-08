@@ -1227,22 +1227,22 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-S10-3 | Component | `Settings.test.tsx` | The "Payment reminders" toggle shows only for a Member, never for an Admin |
 | T-E2E-5 | E2E | `tests/e2e/05_member_flow.spec.ts` | Flow 6: a Member signs up with an added email, verifies, logs in and sees S9 |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] No new migrations (profile `reminders_on`, Member read policies and notices data exist from Phase 2).
+- [x] No new migrations (profile `reminders_on`, Member read policies and notices data exist from Phase 2).
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/reminders.ts`; `src/lib/api/member.ts` (OP21, OP22).
-- [ ] S9 Member Dashboard with NoticeBanner texts from PRD 4.5, S10 reminders toggle. Build each to its design with every state.
+- [x] `src/lib/reminders.ts`; `src/lib/api/member.ts` (OP21, OP22).
+- [x] S9 Member Dashboard with NoticeBanner texts from PRD 4.5, S10 reminders toggle. Build each to its design with every state.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
-- [ ] `npx playwright test tests/e2e/05_member_flow.spec.ts` passes (T-E2E-5: Flow 6, Member signs up with an added email, verifies, logs in and sees S9).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] `npx playwright test tests/e2e/05_member_flow.spec.ts` passes (T-E2E-5: Flow 6, Member signs up with an added email, verifies, logs in and sees S9).
 
 **Step 5: Manual checks (human)**
 
@@ -1251,11 +1251,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S9 and S10 (reminders)) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S9 and S10 (reminders)) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 8: Member Dashboard and reminders (F6, F7)`
 
@@ -1440,19 +1440,19 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 - [x] T-US12-1: Dashboard numbers for the sample data (automated)
 - [x] T-US12-2: Overdue row opens S7 (automated)
 - [x] T-US12-3: empty Dashboard (automated)
-- [ ] T-US13-1: Member Dashboard shows Status, Plan, Benefits, history (automated)
-- [ ] T-US13-2: Overdue banner (automated)
-- [ ] T-US13-3: "No Payments yet." (automated)
-- [ ] T-US14-1: "Payment due soon" banner (automated)
-- [ ] T-US14-2: reminders off → banner hidden (automated)
-- [ ] T-US14-3: reminders switch disabled offline (automated)
-- [ ] T-US14-4: Grace period banner shows with reminders off (automated)
+- [x] T-US13-1: Member Dashboard shows Status, Plan, Benefits, history (automated)
+- [x] T-US13-2: Overdue banner (automated)
+- [x] T-US13-3: "No Payments yet." (automated)
+- [x] T-US14-1: "Payment due soon" banner (automated)
+- [x] T-US14-2: reminders off → banner hidden (automated)
+- [x] T-US14-3: reminders switch disabled offline (automated)
+- [x] T-US14-4: Grace period banner shows with reminders off (automated)
 - [x] T-EDGE-1: Payment while offline (automated)
 - [x] T-EDGE-2: session expires in M3 (automated)
 - [x] T-EDGE-3: Grace period 3 → 0 (automated)
 - [ ] T-EDGE-4: Member signs up before being added (automated)
 - [x] T-EDGE-5: Payment on 31 Jan → 28 Feb 2027 (automated)
-- [ ] T-EDGE-6: Member record deleted while viewing S9 (automated)
+- [x] T-EDGE-6: Member record deleted while viewing S9 (automated)
 - [x] T-EDGE-7: no Undo on an older Payment (automated)
 - [ ] T-EDGE-8: two Admin browsers, last saved wins (automated)
 - [x] T-AUTH-1: password rule (automated)
@@ -1491,6 +1491,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 5 | 8 Nov 2026 | Ready for manual check | 217 / 217 (130 vitest unit/comp, 19 vitest int, 6 playwright E2E, 62 pgTAP) | Phase 5: Member management (F2, US3) | Rules BR2, status SAST, Members API, S2 member signup, S6 Members list, S7 Member Details, M1 Member Form, M5 Delete Member |
 | 6 | 8 Nov 2026 | Ready for manual check | 250 / 250 (158 vitest unit/comp, 22 vitest int, 8 playwright E2E, 62 pgTAP) | Phase 6: Payments (F3) | Rules BR5/BR6, Payments API, M3 Record Payment, M6 Undo Payment, PaymentRow, S7 Payment history |
 | 7 | 8 Nov 2026 | Ready for manual check | 266 / 266 (169 vitest unit/comp, 25 vitest int, 10 playwright E2E, 62 pgTAP) | Phase 7: Entrance check and Dashboard (F4, F5) | Rules BR7/BR9, Dashboard API, S6 search and filters, S5 Admin Dashboard with StatCards & Members per Plan |
+| 8 | 8 Nov 2026 | Ready for manual check | 294 / 294 (193 vitest unit/comp, 27 vitest int, 12 playwright E2E, 62 pgTAP) | Phase 8: Member Dashboard and reminders (F6, F7) | Rules BR10, Member API (OP21, OP22), S9 Member Dashboard with NoticeBanners, S10 Payment reminders toggle |
 
 ---
 

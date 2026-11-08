@@ -19,13 +19,24 @@ vi.mock('../../src/lib/api/gym', () => ({
   updateGracePeriod: vi.fn(),
 }))
 
+vi.mock('../../src/lib/api/member', () => ({
+  getOwnMembership: vi.fn(),
+  setReminders: vi.fn(),
+}))
+
 vi.mock('../../src/hooks/useSession', () => ({
   useSession: vi.fn(),
 }))
 
+vi.mock('../../src/hooks/useOnline', () => ({
+  useOnline: vi.fn(() => true),
+}))
+
 import { useSession } from '../../src/hooks/useSession'
+import { useOnline } from '../../src/hooks/useOnline'
 import * as authApi from '../../src/lib/api/auth'
 import * as gymApi from '../../src/lib/api/gym'
+import * as memberApi from '../../src/lib/api/member'
 import { messages } from '../../src/lib/messages'
 
 function renderSettings(role: 'admin' | 'member' = 'admin') {
@@ -163,6 +174,63 @@ describe('T-S10-1 Settings screen (shell)', () => {
     await userEvent.clear(input)
     await userEvent.click(saveButton)
     expect(screen.getByText(messages.graceError)).toBeInTheDocument()
+  })
+})
+
+describe('T-S10-3 / T-US14-2 / T-US14-3 Reminders toggle (Member only)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    vi.mocked(useOnline).mockReturnValue(true)
+    vi.mocked(memberApi.getOwnMembership).mockResolvedValue({
+      data: {
+        id: 'mem-1',
+        reminders_on: true,
+      } as never,
+      error: null,
+    })
+    vi.mocked(memberApi.setReminders).mockResolvedValue({ error: null })
+  })
+
+  it('T-S10-3 Payment reminders toggle shows only for Member, never for Admin', async () => {
+    // Admin view
+    const { unmount } = renderSettings('admin')
+    expect(screen.queryByLabelText(/payment reminders/i)).not.toBeInTheDocument()
+    unmount()
+
+    // Member view
+    renderSettings('member')
+    await waitFor(() => {
+      expect(screen.getByLabelText(/payment reminders/i)).toBeInTheDocument()
+    })
+  })
+
+  it('T-US14-2 Member switches reminders off -> calls setReminders(false) and shows toast', async () => {
+    renderSettings('member')
+    const toggle = await screen.findByRole('switch', { name: /payment reminders/i })
+    expect(toggle).toBeChecked()
+
+    await userEvent.click(toggle)
+
+    await waitFor(() => {
+      expect(memberApi.setReminders).toHaveBeenCalledWith(false)
+      expect(screen.getByText(messages.remindersOff)).toBeInTheDocument()
+    })
+
+    // Now toggle back on
+    await userEvent.click(toggle)
+    await waitFor(() => {
+      expect(memberApi.setReminders).toHaveBeenCalledWith(true)
+      expect(screen.getByText(messages.remindersOn)).toBeInTheDocument()
+    })
+  })
+
+  it('T-US14-3 Offline disables Payment reminders switch', async () => {
+    vi.mocked(useOnline).mockReturnValue(false)
+    renderSettings('member')
+
+    const toggle = await screen.findByRole('switch', { name: /payment reminders/i })
+    expect(toggle).toBeDisabled()
+    expect(screen.getByText(messages.offline)).toBeInTheDocument()
   })
 })
 
