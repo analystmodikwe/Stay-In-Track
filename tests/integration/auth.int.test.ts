@@ -112,4 +112,22 @@ describe('Auth integration tests', () => {
     const { error } = await client.auth.resetPasswordForEmail('nonexistent_random_user@example.com')
     expect(error).toBeNull()
   })
+
+  it('T-US3-1 & T-US3-2 can_sign_up_as_member RPC checks member pre-registration', async () => {
+    // Unlinked seeded member johan.vdm@example.com can sign up
+    const { data: canSignUp, error: rpcError } = await client.rpc('can_sign_up_as_member', {
+      email: 'johan.vdm@example.com',
+    })
+
+    expect(rpcError).toBeNull()
+    expect(canSignUp).toBe(true)
+
+    // Unknown email cannot sign up
+    const { data: cannotSignUp, error: rpcError2 } = await client.rpc('can_sign_up_as_member', {
+      email: 'unknown_nonexistent_email@example.com',
+    })
+
+    expect(rpcError2).toBeNull()
+    expect(cannotSignUp).toBe(false)
+  })
 })

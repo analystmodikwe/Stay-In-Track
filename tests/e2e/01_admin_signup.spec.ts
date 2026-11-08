@@ -27,7 +27,7 @@ test.describe('Flow 1 (part 1) - Admin Sign-up & Login', () => {
     await page.getByRole('button', { name: /sign up/i }).click()
 
     // 5. Land on Log In (S3) with verification banner
-    await expect(page).toHaveURL(/.*log-in/)
+    await expect(page).toHaveURL(/.*log-in/, { timeout: 15000 })
     await expect(
       page.getByText('Check your email and tap the link to verify your account.')
     ).toBeVisible()

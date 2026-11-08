@@ -51,6 +51,8 @@ export function LogIn() {
       } else if (code === 'over_request_rate_limit' || msg.includes('rate_limit')) {
         setRateLimited(true)
         setErrorMsg(messages.tooManyAttempts)
+      } else if (code === 'member_removed' || msg.includes('record was removed')) {
+        setErrorMsg(messages.memberRemoved)
       } else {
         setErrorMsg(messages.wrongPassword)
       }

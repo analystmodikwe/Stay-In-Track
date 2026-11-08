@@ -56,5 +56,17 @@ describe('Grace period integration tests', () => {
     expect(fetchError).toBeNull()
     expect(gym!.grace_days).toBe(5)
   })
+
+  it('T-US10-1b Member 4 days past paid_until is Grace period when grace_days = 5', async () => {
+    // Call database function member_status('2026-10-24', 5, '2026-10-28')
+    const { data: status, error } = await client.rpc('member_status', {
+      paid_until: '2026-10-24',
+      grace_days: 5,
+      today: '2026-10-28',
+    })
+
+    expect(error).toBeNull()
+    expect(status).toBe('grace')
+  })
 })
 

@@ -16,6 +16,20 @@ export async function signUp(params: {
   gymName?: string
   is18OrOlder?: boolean
 }): Promise<AuthResult> {
+  if (params.role === 'member') {
+    const { data: canSignUp, error: rpcError } = await supabase.rpc('can_sign_up_as_member', {
+      email: params.email.trim().toLowerCase(),
+    })
+    if (rpcError || !canSignUp) {
+      return {
+        error: {
+          message: "We can't find this email at any gym. Ask your gym Admin to add you first.",
+          code: 'member_not_found',
+        },
+      }
+    }
+  }
+
   const { error } = await supabase.auth.signUp({
     email: params.email,
     password: params.password,
@@ -40,9 +54,38 @@ export async function logIn(params: {
     email: params.email,
     password: params.password,
   })
+
+  if (error) {
+    return {
+      data: null,
+      error: { message: error.message, code: error.code },
+    }
+  }
+
+  // Member removed check (OP3 / Section 11)
+  const user = data.user
+  if (user?.user_metadata?.role === 'member') {
+    const { data: memberRow } = await supabase
+      .from('members')
+      .select('id')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (!memberRow) {
+      await supabase.auth.signOut()
+      return {
+        data: null,
+        error: {
+          message: 'Your membership record was removed. Please contact your gym.',
+          code: 'member_removed',
+        },
+      }
+    }
+  }
+
   return {
     data: data as { session: unknown; user: unknown },
-    error: error ? { message: error.message, code: error.code } : null,
+    error: null,
   }
 }
 

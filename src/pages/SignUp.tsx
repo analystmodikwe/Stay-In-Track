@@ -60,7 +60,10 @@ export function SignUp() {
       const code = result.error.code
       if (code === 'user_already_exists' || result.error.message.includes('already registered')) {
         setErrorMsg(messages.emailExists)
-      } else if (result.error.message.includes('member_not_found')) {
+      } else if (
+        result.error.message.includes('member_not_found') ||
+        result.error.message.includes("We can't find this email")
+      ) {
         setErrorMsg(messages.memberNotFound)
       } else {
         setErrorMsg(messages.serverError)

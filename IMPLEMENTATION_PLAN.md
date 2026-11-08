@@ -1032,24 +1032,24 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-BR3-2 | Unit | `tests/unit/status.test.ts` | Same cases as T-BR3-1 plus: paid until 25 Oct is "grace" on 28 Oct and "overdue" on 29 Oct; with 0 grace days, paid until yesterday is "overdue"; `today` is passed in; the SAST day boundary (23:30 UTC on 27 Oct is already 28 Oct in SAST) |
 | T-E2E-2 | E2E | `tests/e2e/02_plan_and_member.spec.ts` | Flow 2: Admin creates a Plan and adds a Member |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] No new migrations (tables, triggers, `list_members` and `can_sign_up_as_member` exist from Phase 2).
+- [x] No new migrations (tables, triggers, `list_members` and `can_sign_up_as_member` exist from Phase 2).
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/rules/member.ts`; `src/lib/api/members.ts`; `src/lib/status.ts` (needed to show the badge).
-- [ ] S2 shows "Gym name" only for "Gym admin"; Member sign-up calls `can_sign_up_as_member` first (OP2).
-- [ ] S6 Members list (20 at a time with "Load more"), S7 Member Details (Payment history area shows "No Payments yet." until Phase 6), M1 Member Form, M5 Delete Member, MemberRow. Build each to its design with every state.
-- [ ] The removed-record guard at log-in (Section 11).
+- [x] `src/lib/rules/member.ts`; `src/lib/api/members.ts`; `src/lib/status.ts` (needed to show the badge).
+- [x] S2 shows "Gym name" only for "Gym admin"; Member sign-up calls `can_sign_up_as_member` first (OP2).
+- [x] S6 Members list (20 at a time with "Load more"), S7 Member Details (Payment history area shows "No Payments yet." until Phase 6), M1 Member Form, M5 Delete Member, MemberRow. Build each to its design with every state.
+- [x] The removed-record guard at log-in (Section 11).
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
-- [ ] `npx playwright test tests/e2e/02_plan_and_member.spec.ts` passes (T-E2E-2: Flow 2, create a Plan and add a Member).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] `npx playwright test tests/e2e/02_plan_and_member.spec.ts` passes (T-E2E-2: Flow 2, create a Plan and add a Member).
 
 **Step 5: Manual checks (human)**
 
@@ -1059,11 +1059,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S2 (Member form), S6, S7, M1 and M5) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S2 (Member form), S6, S7, M1 and M5) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 5: Member management (F2, US3)`
 
@@ -1488,6 +1488,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 2 | 8 Nov 2026 | Ready for manual check | 34 / 34 (25 vitest, 2 playwright, 10 pgTAP suites) | Phase 2: Data and security | PostgreSQL migrations 0001-0005, RLS policies SEC1-SEC20, triggers and business functions, seed script and README |
 | 3 | 8 Nov 2026 | Ready for manual check | 158 / 158 (85 vitest unit/comp, 9 vitest int, 2 playwright E2E, 62 pgTAP) | Phase 3: Accounts (F1) | Auth rules, API, S2, S3, S4, S10 (shell), S11, M4, route guards, TabBar/SideMenu |
 | 4 | 8 Nov 2026 | Ready for manual check | 178 / 178 (104 vitest unit/comp, 12 vitest int, 62 pgTAP) | Phase 4: Plans and Grace period (F3) | Rules BR1/BR4, Plans & Gym API, S8 Plans, M2 Plan Form, Admin Grace period block on S10 |
+| 5 | 8 Nov 2026 | Ready for manual check | 217 / 217 (130 vitest unit/comp, 19 vitest int, 6 playwright E2E, 62 pgTAP) | Phase 5: Member management (F2, US3) | Rules BR2, status SAST, Members API, S2 member signup, S6 Members list, S7 Member Details, M1 Member Form, M5 Delete Member |
 
 ---
 

@@ -102,4 +102,23 @@ describe('LogIn screen', () => {
       screen.getByText('Check your email and tap the link to verify your account.')
     ).toBeInTheDocument()
   })
+
+  it('T-US6-4 member whose record was removed shows error message and signs out', async () => {
+    vi.mocked(authApi.logIn).mockResolvedValueOnce({
+      error: { message: 'Your membership record was removed. Please contact your gym.' },
+      data: { session: null, user: null },
+    })
+
+    renderLogIn()
+    const user = userEvent.setup()
+    await user.type(screen.getByLabelText(/email/i), 'deleted.member@example.com')
+    await user.type(getPasswordInput(), 'Password1')
+    await user.click(screen.getByRole('button', { name: /log in/i }))
+
+    await waitFor(() =>
+      expect(
+        screen.getByText('Your membership record was removed. Please contact your gym.')
+      ).toBeInTheDocument()
+    )
+  })
 })

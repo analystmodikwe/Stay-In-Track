@@ -173,8 +173,8 @@ declare
   v_gym_id uuid;
   v_grace_days integer;
 begin
-  select gym_id into v_gym_id from public.profiles where id = auth.uid();
-  select grace_days into v_grace_days from public.gyms where id = v_gym_id;
+  select pr.gym_id into v_gym_id from public.profiles pr where pr.id = auth.uid();
+  select g.grace_days into v_grace_days from public.gyms g where g.id = v_gym_id;
 
   return query
   select
@@ -230,8 +230,8 @@ declare
   v_plans jsonb;
   v_overdue_list jsonb;
 begin
-  select gym_id into v_gym_id from public.profiles where id = auth.uid();
-  select grace_days into v_grace_days from public.gyms where id = v_gym_id;
+  select pr.gym_id into v_gym_id from public.profiles pr where pr.id = auth.uid();
+  select g.grace_days into v_grace_days from public.gyms g where g.id = v_gym_id;
 
   -- Member status counts
   select

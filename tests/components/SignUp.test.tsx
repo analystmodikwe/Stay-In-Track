@@ -146,4 +146,44 @@ describe('SignUp — Admin form', () => {
     await user.selectOptions(screen.getByLabelText(/account type/i), 'member')
     expect(screen.queryByLabelText(/gym name/i)).not.toBeInTheDocument()
   })
+
+  it('T-US3-1 Member sign up with pre-registered email succeeds -> S3 with verify-email banner', async () => {
+    const { signUp } = await import('../../src/lib/api/auth')
+    vi.mocked(signUp).mockResolvedValueOnce({ error: null })
+
+    renderWithRoutes()
+    const user = userEvent.setup()
+    await user.selectOptions(screen.getByLabelText(/account type/i), 'member')
+    await user.type(screen.getByLabelText(/full name/i), 'Naledi Khumalo')
+    await user.type(screen.getByLabelText(/email/i), 'naledi.k@example.com')
+    await user.type(getPasswordInput(), 'Password1')
+    await user.click(screen.getByLabelText(/i am 18 or older/i))
+    await user.click(screen.getByLabelText(/i agree to the privacy notice/i))
+    await user.click(screen.getByRole('button', { name: /sign up/i }))
+
+    await waitFor(() =>
+      expect(screen.getByText('Check your email and tap the link to verify your account.')).toBeInTheDocument()
+    )
+  })
+
+  it('T-US3-2 & T-EDGE-4 Member sign up with unknown email shows memberNotFound error', async () => {
+    const { signUp } = await import('../../src/lib/api/auth')
+    vi.mocked(signUp).mockResolvedValueOnce({
+      error: { message: "We can't find this email at any gym. Ask your gym Admin to add you first." },
+    })
+
+    renderWithRoutes()
+    const user = userEvent.setup()
+    await user.selectOptions(screen.getByLabelText(/account type/i), 'member')
+    await user.type(screen.getByLabelText(/full name/i), 'Unknown Person')
+    await user.type(screen.getByLabelText(/email/i), 'unknown@example.com')
+    await user.type(getPasswordInput(), 'Password1')
+    await user.click(screen.getByLabelText(/i am 18 or older/i))
+    await user.click(screen.getByLabelText(/i agree to the privacy notice/i))
+    await user.click(screen.getByRole('button', { name: /sign up/i }))
+
+    await waitFor(() =>
+      expect(screen.getByText("We can't find this email at any gym. Ask your gym Admin to add you first.")).toBeInTheDocument()
+    )
+  })
 })

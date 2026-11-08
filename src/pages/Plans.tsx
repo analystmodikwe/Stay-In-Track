@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { Plus, Dumbbell } from 'lucide-react'
 import { Header } from '../components/Header'
 import { TabBar } from '../components/TabBar'
+import { SideMenu } from '../components/SideMenu'
 import { OfflineBanner } from '../components/OfflineBanner'
 import { PlanCard } from '../components/PlanCard'
 import { LoadingPlaceholder } from '../components/LoadingPlaceholder'
@@ -78,7 +79,8 @@ export function Plans() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-20">
+    <div className="min-h-screen bg-background flex flex-col pb-20 tablet:pl-[240px]">
+      <SideMenu role="admin" />
       <Header title="Plans" />
       <OfflineBanner />
 
