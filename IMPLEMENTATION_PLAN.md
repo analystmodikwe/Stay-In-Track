@@ -825,22 +825,22 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-SEC-19b | Database | `100_rls.test.sql` | `delete_my_account()` accepts no user id and cannot remove another user; `anon` cannot call it (SEC19) |
 | T-SEC-20b | Database | `100_rls.test.sql` | No one, not even an Admin, can insert directly into `profiles` (SEC20) |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] Migrations `0001` to `0005` exactly as in Section 8.6, applied with `npx supabase db reset`.
-- [ ] `supabase/seed/seed.ts` and `seed/README.md` load the data in 8.7 (`npm run seed`).
-- [ ] Every function has `set search_path = ''`; the "definer" functions in 8.5 are the only ones that bypass RLS; execute rights follow SEC18.
+- [x] Migrations `0001` to `0005` exactly as in Section 8.6, applied with `npx supabase db reset`.
+- [x] `supabase/seed/seed.ts` and `seed/README.md` load the data in 8.7 (`npm run seed`).
+- [x] Every function has `set search_path = ''`; the "definer" functions in 8.5 are the only ones that bypass RLS; execute rights follow SEC18.
 
 **Step 3: Frontend (Green)**
 
-- [ ] None in this phase.
+- [x] None in this phase.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
 
 **Step 5: Manual checks (human)**
 
@@ -849,12 +849,12 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass (all Phase 1 tests).
-- [ ] Every screen in this phase shows all its required states (there are no screens in this phase).
-- [ ] Reset + seed works from scratch with two commands.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass (all Phase 1 tests).
+- [x] Every screen in this phase shows all its required states (there are no screens in this phase).
+- [x] Reset + seed works from scratch with two commands.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 2: Data and security`
 
@@ -1484,7 +1484,8 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 | Phase | Date | Status | Automated tests (passed / total) | Commit | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 1 | 8 Nov 2026 | Ready for manual check | 27 / 27 (25 vitest, 2 playwright) | Phase 1: Foundation | React 18.3.1, Vite 5.4.21, React Router 6.28.0, Tailwind CSS 3.4.14, Lucide React 0.456.0, Inter 5.0.0, Vitest 2.1.9, Playwright 1.58.2, Supabase JS 2.47.0 |
+| 1 | 8 Nov 2026 | Done | 27 / 27 (25 vitest, 2 playwright) | Phase 1: Foundation | React 18.3.1, Vite 5.4.21, React Router 6.28.0, Tailwind CSS 3.4.14, Lucide React 0.456.0, Inter 5.0.0, Vitest 2.1.9, Playwright 1.58.2, Supabase JS 2.47.0 |
+| 2 | 8 Nov 2026 | Ready for manual check | 34 / 34 (25 vitest, 2 playwright, 10 pgTAP suites) | Phase 2: Data and security | PostgreSQL migrations 0001-0005, RLS policies SEC1-SEC20, triggers and business functions, seed script and README |
 
 ---
 
