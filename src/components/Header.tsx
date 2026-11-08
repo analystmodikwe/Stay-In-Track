@@ -8,6 +8,8 @@ import { ArrowLeft, X } from 'lucide-react'
 export interface HeaderProps {
   title: string
   subtitle?: string
+  /** Optional boolean flag; when onBack is passed it displays the back arrow */
+  showBack?: boolean
   /** If provided, shows a back arrow that calls this function. */
   onBack?: () => void
   /** If provided, shows a close (X) icon that calls this function. */

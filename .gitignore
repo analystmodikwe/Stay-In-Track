@@ -33,5 +33,9 @@ playwright-report/
 blob-report/
 playwright/.cache/
 
+# Supabase
+supabase/.temp/
+supabase/.branches/
+
 # TypeScript
 *.tsbuildinfo

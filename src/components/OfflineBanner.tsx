@@ -6,10 +6,16 @@ import React from 'react'
 import { WifiOff } from 'lucide-react'
 import { useOnline } from '../hooks/useOnline'
 
-export function OfflineBanner() {
-  const online = useOnline()
+export interface OfflineBannerProps {
+  className?: string
+  forceOffline?: boolean
+}
 
-  if (online) return null
+export function OfflineBanner({ className = '', forceOffline }: OfflineBannerProps) {
+  const online = useOnline()
+  const isOffline = forceOffline !== undefined ? forceOffline : !online
+
+  if (!isOffline) return null
 
   return (
     <div
@@ -19,6 +25,7 @@ export function OfflineBanner() {
         'px-screen py-2',
         'flex items-center gap-2',
         'text-small text-[#7A4B00]',
+        className,
       ].join(' ')}
     >
       <WifiOff size={16} aria-hidden="true" />
@@ -26,4 +33,3 @@ export function OfflineBanner() {
     </div>
   )
 }
-

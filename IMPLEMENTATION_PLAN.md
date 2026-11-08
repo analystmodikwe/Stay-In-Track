@@ -896,30 +896,30 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-S10-1 | Component | `Settings.test.tsx` | Shows Account name and email (read-only), "Privacy Notice" row → S11, "Logout" → S1 with no confirmation, "Delete account" → M4 |
 | T-E2E-1 | E2E | `tests/e2e/01_admin_signup.spec.ts` | Flow 1, part 1: Admin signs up, reads the verify banner, opens the link from the local email inbox, logs in and reaches S5 (placeholder). Extended in Phase 9 to check the S5 empty text |
 
-- [ ] All tests above are written, run, and fail for the expected reason.
+- [x] All tests above are written, run, and fail for the expected reason.
 
 **Step 2: Backend (Green)**
 
-- [ ] Supabase Auth settings in `supabase/config.toml`:
+- [x] Supabase Auth settings in `supabase/config.toml`:
     - `minimum_password_length = 8` and `password_requirements = "letters_digits"`;
     - `[auth.email] enable_confirmations = true` and `otp_expiry = 3600` (reset link works for 1 hour);
     - `site_url` and `additional_redirect_urls` set for the local app address;
     - `[auth.rate_limit]` left at its defaults (the server-side protection behind T-US2-4).
-- [ ] Nothing else: the database objects exist from Phase 2.
+- [x] Nothing else: the database objects exist from Phase 2.
 
 **Step 3: Frontend (Green)**
 
-- [ ] `src/lib/rules/password.ts`, `src/lib/api/auth.ts` (OP1, OP3–OP8), `useSession`, with messages from `src/lib/messages.ts` and the 30-day sign-out.
-- [ ] S2 Sign Up (Admin form: Account type, Gym name, Full name, Email, Password, both checkboxes), S3 Log In (verify banner, "Resend email"), S4 Forgot Password, S11 Privacy Notice (text from PRD 12.4), each built to its design with every state in 7.3.
-- [ ] Router guards in `App.tsx` (Section 11).
-- [ ] TabBar / SideMenu (T-C-12), plus placeholder pages for S5, S6, S8 and S9 that show only the screen title. Each is replaced in its own phase.
-- [ ] S10 Settings shell (Account block, Privacy Notice row, Logout, Delete account) and M4 Delete Account (Admin and Member variants) using ConfirmModal.
+- [x] `src/lib/rules/password.ts`, `src/lib/api/auth.ts` (OP1, OP3–OP8), `useSession`, with messages from `src/lib/messages.ts` and the 30-day sign-out.
+- [x] S2 Sign Up (Admin form: Account type, Gym name, Full name, Email, Password, both checkboxes), S3 Log In (verify banner, "Resend email"), S4 Forgot Password, S11 Privacy Notice (text from PRD 12.4), each built to its design with every state in 7.3.
+- [x] Router guards in `App.tsx` (Section 11).
+- [x] TabBar / SideMenu (T-C-12), plus placeholder pages for S5, S6, S8 and S9 that show only the screen title. Each is replaced in its own phase.
+- [x] S10 Settings shell (Account block, Privacy Notice row, Logout, Delete account) and M4 Delete Account (Admin and Member variants) using ConfirmModal.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
-- [ ] `npx playwright test tests/e2e/01_admin_signup.spec.ts` passes (T-E2E-1 part 1: sign up as Admin, read the verify banner, open the verification link from the local email inbox, log in, reach S5 with the placeholder).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] Full check passes (lint, type check, every automated test from every phase so far): `npm run check` passes.
+- [x] `npx playwright test tests/e2e/01_admin_signup.spec.ts` passes (T-E2E-1 part 1: sign up as Admin, read the verify banner, open the verification link from the local email inbox, log in, reach S5 with the placeholder).
 
 **Step 5: Manual checks (human)**
 
@@ -930,11 +930,11 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (S2, S3, S4, S10 (shell), S11 and M4) shows all its required states.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (S2, S3, S4, S10 (shell), S11 and M4) shows all its required states.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 3: Accounts (F1)`
 
@@ -1486,6 +1486,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | --- | --- | --- | --- | --- | --- |
 | 1 | 8 Nov 2026 | Done | 27 / 27 (25 vitest, 2 playwright) | Phase 1: Foundation | React 18.3.1, Vite 5.4.21, React Router 6.28.0, Tailwind CSS 3.4.14, Lucide React 0.456.0, Inter 5.0.0, Vitest 2.1.9, Playwright 1.58.2, Supabase JS 2.47.0 |
 | 2 | 8 Nov 2026 | Ready for manual check | 34 / 34 (25 vitest, 2 playwright, 10 pgTAP suites) | Phase 2: Data and security | PostgreSQL migrations 0001-0005, RLS policies SEC1-SEC20, triggers and business functions, seed script and README |
+| 3 | 8 Nov 2026 | Ready for manual check | 158 / 158 (85 vitest unit/comp, 9 vitest int, 2 playwright E2E, 62 pgTAP) | Phase 3: Accounts (F1) | Auth rules, API, S2, S3, S4, S10 (shell), S11, M4, route guards, TabBar/SideMenu |
 
 ---
 

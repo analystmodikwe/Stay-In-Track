@@ -6,17 +6,7 @@
 import { useEffect, useState } from 'react'
 import { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
-
-const SESSION_MAX_AGE_DAYS = 30
-const MS_PER_DAY = 24 * 60 * 60 * 1000
-
-function isSessionTooOld(session: Session): boolean {
-  // session.created_at is a Unix timestamp in seconds
-  const createdAt = (session as unknown as { created_at?: number }).created_at
-  if (typeof createdAt !== 'number') return false
-  const ageMs = Date.now() - createdAt * 1000
-  return ageMs > SESSION_MAX_AGE_DAYS * MS_PER_DAY
-}
+import { isSessionTooOld } from '../lib/rules/session'
 
 export function useSession() {
   const [session, setSession] = useState<Session | null>(null)

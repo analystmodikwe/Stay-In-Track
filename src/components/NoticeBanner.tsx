@@ -11,6 +11,7 @@ export interface NoticeBannerProps {
   icon: LucideIcon
   text: string
   variant?: BannerVariant
+  className?: string
 }
 
 const variantStyles: Record<BannerVariant, string> = {
@@ -19,7 +20,7 @@ const variantStyles: Record<BannerVariant, string> = {
   error:   'bg-[#FBE3E3] text-[#9B1C1C] border border-[#9B1C1C]/20',
 }
 
-export function NoticeBanner({ icon: Icon, text, variant = 'info' }: NoticeBannerProps) {
+export function NoticeBanner({ icon: Icon, text, variant = 'info', className = '' }: NoticeBannerProps) {
   return (
     <div
       role="status"
@@ -27,6 +28,7 @@ export function NoticeBanner({ icon: Icon, text, variant = 'info' }: NoticeBanne
       className={[
         'flex items-start gap-3 rounded-card px-4 py-3',
         variantStyles[variant],
+        className,
       ].join(' ')}
     >
       <Icon size={20} className="flex-shrink-0 mt-0.5" aria-hidden="true" />

@@ -7,22 +7,36 @@ import { Button } from './Button'
 
 export interface ConfirmModalProps {
   title: string
-  text: string
+  /** Either a plain string or rich ReactNode (for M4 which includes OfflineBanner) */
+  text?: string
+  body?: React.ReactNode
   confirmLabel: string
   onConfirm: () => void
   onCancel: () => void
   loading?: boolean
+  /** Alias for loading — used by DeleteAccount */
+  confirmLoading?: boolean
+  /** Disables the confirm button independently of loading */
+  confirmDisabled?: boolean
+  /** When false the modal is not rendered at all */
+  isOpen?: boolean
 }
 
 export function ConfirmModal({
   title,
   text,
+  body,
   confirmLabel,
   onConfirm,
   onCancel,
   loading = false,
+  confirmLoading,
+  confirmDisabled,
+  isOpen = true,
 }: ConfirmModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
+  const isLoading  = confirmLoading ?? loading
+  const isDisabled = confirmDisabled ?? false
 
   // Tap outside closes
   function handleOverlayClick(e: React.MouseEvent<HTMLDivElement>) {
@@ -40,6 +54,8 @@ export function ConfirmModal({
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [onCancel])
 
+  if (!isOpen) return null
+
   return (
     <div
       ref={overlayRef}
@@ -54,14 +70,20 @@ export function ConfirmModal({
         <h2 id="confirm-title" className="text-heading font-semibold text-text-main">
           {title}
         </h2>
-        <p id="confirm-text" className="text-body text-text-secondary">
-          {text}
-        </p>
+        {/* Body: prefer ReactNode (body), fall back to text string */}
+        <div id="confirm-text" className="text-body text-text-secondary">
+          {body ?? <p>{text}</p>}
+        </div>
         <div className="flex flex-col gap-3">
-          <Button variant="danger" loading={loading} onClick={onConfirm}>
+          <Button
+            variant="danger"
+            loading={isLoading}
+            disabled={isDisabled || isLoading}
+            onClick={onConfirm}
+          >
             {confirmLabel}
           </Button>
-          <Button variant="secondary" disabled={loading} onClick={onCancel}>
+          <Button variant="secondary" disabled={isLoading} onClick={onCancel}>
             Cancel
           </Button>
         </div>
@@ -69,4 +91,3 @@ export function ConfirmModal({
     </div>
   )
 }
-
