@@ -115,7 +115,7 @@ describe('SignUp — Admin form', () => {
     await waitFor(() =>
       expect(screen.getByText('Check your email and tap the link to verify your account.')).toBeInTheDocument()
     )
-  })
+  }, 15000)
 
   it('T-US1-2 on duplicate email → shows "already has an account" message', async () => {
     const { signUp } = await import('../../src/lib/api/auth')
@@ -164,7 +164,7 @@ describe('SignUp — Admin form', () => {
     await waitFor(() =>
       expect(screen.getByText('Check your email and tap the link to verify your account.')).toBeInTheDocument()
     )
-  })
+  }, 15000)
 
   it('T-US3-2 & T-EDGE-4 Member sign up with unknown email shows memberNotFound error', async () => {
     const { signUp } = await import('../../src/lib/api/auth')

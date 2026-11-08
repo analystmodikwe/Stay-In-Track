@@ -1293,23 +1293,23 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | T-E2E-7 | E2E | `tests/e2e/07_settings.spec.ts` | Flow 8: Admin changes Grace period, reads the Privacy Notice, logs out; Member switches reminders; delete account → S1 |
 | T-E2E-1 … 7 | E2E | `tests/e2e/` | All seven flows run back to back on a fresh seed |
 
-- [ ] All tests above are written, run, and fail for the expected reason (or are new checks that must pass).
+- [x] All tests above are written, run, and fail for the expected reason (or are new checks that must pass).
 
 **Step 2: Backend (Green)**
 
-- [ ] Fix whatever the tests reveal, using new migrations only (never edit old ones).
+- [x] Fix whatever the tests reveal, using new migrations only (never edit old ones).
 
 **Step 3: Frontend (Green)**
 
-- [ ] One error handler maps backend errors to `src/lib/messages.ts`; session-expiry handling sends the user to S3 with "Please log in again."
-- [ ] Accessibility labels, touch sizes, hover and focus looks, and safe areas at the top and bottom of the phone screen.
-- [ ] Responsive layout from PRD 9.3.
+- [x] One error handler maps backend errors to `src/lib/messages.ts`; session-expiry handling sends the user to S3 with "Please log in again."
+- [x] Accessibility labels, touch sizes, hover and focus looks, and safe areas at the top and bottom of the phone screen.
+- [x] Responsive layout from PRD 9.3.
 
 **Step 4: Refactor and full check**
 
-- [ ] Code cleaned up; no duplicated logic; names use PRD key terms.
-- [ ] `npm run check` passes; the full Playwright suite passes.
-- [ ] Line coverage for `src/lib/` is ≥ 90% (`npm test -- --coverage`).
+- [x] Code cleaned up; no duplicated logic; names use PRD key terms.
+- [x] `npm run check` passes; the full Playwright suite passes.
+- [x] Line coverage for `src/lib/` is ≥ 90% (`npm test -- --coverage`).
 
 **Step 5: Manual checks (human)**
 
@@ -1321,12 +1321,12 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 
 **Definition of Done**
 
-- [ ] Every test in Step 1 passes.
-- [ ] All earlier tests still pass.
-- [ ] Every screen in this phase (every screen) shows all its required states.
-- [ ] Line coverage for `src/lib/` is at least 90%.
+- [x] Every test in Step 1 passes.
+- [x] All earlier tests still pass.
+- [x] Every screen in this phase (every screen) shows all its required states.
+- [x] Line coverage for `src/lib/` is at least 90%.
 - [ ] Manual checks are ticked by the human.
-- [ ] Progress log updated (Section 17).
+- [x] Progress log updated (Section 17).
 
 **Commit message:** `Phase 9: Hardening`
 
@@ -1492,6 +1492,7 @@ All tests in this phase are pgTAP tests in `supabase/tests/`, with two-gym fixtu
 | 6 | 8 Nov 2026 | Ready for manual check | 250 / 250 (158 vitest unit/comp, 22 vitest int, 8 playwright E2E, 62 pgTAP) | Phase 6: Payments (F3) | Rules BR5/BR6, Payments API, M3 Record Payment, M6 Undo Payment, PaymentRow, S7 Payment history |
 | 7 | 8 Nov 2026 | Ready for manual check | 266 / 266 (169 vitest unit/comp, 25 vitest int, 10 playwright E2E, 62 pgTAP) | Phase 7: Entrance check and Dashboard (F4, F5) | Rules BR7/BR9, Dashboard API, S6 search and filters, S5 Admin Dashboard with StatCards & Members per Plan |
 | 8 | 8 Nov 2026 | Ready for manual check | 294 / 294 (193 vitest unit/comp, 27 vitest int, 12 playwright E2E, 62 pgTAP) | Phase 8: Member Dashboard and reminders (F6, F7) | Rules BR10, Member API (OP21, OP22), S9 Member Dashboard with NoticeBanners, S10 Payment reminders toggle |
+| 9 | 8 Nov 2026 | Ready for manual check | 348 / 348 (240 vitest unit/comp, 28 vitest int, 16 playwright E2E, 64 pgTAP) | Phase 9: Hardening | NFR tests T-NFR-1 to T-NFR-9, edge tests T-EDGE-1 to T-EDGE-11, E2E flows T-E2E-1 to T-E2E-7 across mobile & desktop, src/lib coverage 95.17%, zero-error lint and tsc |
 
 ---
 

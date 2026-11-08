@@ -11,6 +11,7 @@ import { ForgotPassword } from '../../src/pages/ForgotPassword'
 vi.mock('../../src/lib/api/auth', () => ({
   sendPasswordReset: vi.fn(),
   updatePassword:    vi.fn(),
+  logOut:            vi.fn().mockResolvedValue({ error: null }),
 }))
 
 import * as authApi from '../../src/lib/api/auth'

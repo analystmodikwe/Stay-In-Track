@@ -70,8 +70,9 @@ test.describe('Flow 1 (part 1) - Admin Sign-up & Login', () => {
     await page.getByLabel(/^password$/i).fill(adminPassword)
     await page.getByRole('button', { name: /log in/i }).click()
 
-    // 8. Reach S5 (Dashboard placeholder)
+    // 8. Reach S5 (Dashboard) and verify empty state: "No Members yet. Add your first Member."
     await expect(page).toHaveURL(/.*dashboard/)
     await expect(page.getByRole('heading', { name: /^dashboard$/i })).toBeVisible()
+    await expect(page.getByText('No Members yet. Add your first Member.')).toBeVisible()
   })
 })

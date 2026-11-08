@@ -74,6 +74,8 @@ function mapMemberError(error: { code?: string; message?: string } | null): stri
   return messages.serverError
 }
 
+export const PAGE_SIZE = 20
+
 export async function listMembers(options?: {
   search?: string
   status?: string

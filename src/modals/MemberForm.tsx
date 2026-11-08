@@ -9,6 +9,7 @@ import { formatPhone, normalizePhone } from '../lib/format'
 import { Plan } from '../lib/api/plans'
 import { Member } from '../lib/api/members'
 import { messages } from '../lib/messages'
+import { useOnline } from '../hooks/useOnline'
 
 export interface MemberFormModalProps {
   isOpen: boolean
@@ -33,6 +34,7 @@ export function MemberFormModal({
 }: MemberFormModalProps) {
   const isEdit = !!member
   const isEmailLocked = isEdit && !!member.user_id
+  const isOnline = useOnline()
 
   const activePlans = useMemo(() => plans.filter((p) => p.status === 'active'), [plans])
 
@@ -202,6 +204,7 @@ export function MemberFormModal({
               type="submit"
               variant="primary"
               loading={saving}
+              disabled={saving || !isOnline}
               className="w-full"
             >
               Save

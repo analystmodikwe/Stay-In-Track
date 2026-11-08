@@ -58,3 +58,32 @@ export function todaySAST(): string {
   }).format(new Date())
 }
 
+/**
+ * Format a UTC date-time string as 24-hour time in SAST ("HH:mm").
+ * Example: "2026-10-28T12:30:00Z" -> "14:30"
+ */
+export function formatTimeSAST(isoDateTime: string): string {
+  const d = new Date(isoDateTime)
+  return new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: SAST_TIMEZONE,
+  }).format(d)
+}
+
+/**
+ * Format a UTC date-time string as "28 Oct 2026, 14:30" (SAST).
+ */
+export function formatDateTimeSAST(isoDateTime: string): string {
+  const d = new Date(isoDateTime)
+  const datePart = new Intl.DateTimeFormat('en-ZA', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: SAST_TIMEZONE,
+  }).format(d)
+  const timePart = formatTimeSAST(isoDateTime)
+  return `${datePart}, ${timePart}`
+}
+

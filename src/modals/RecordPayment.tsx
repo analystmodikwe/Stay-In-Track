@@ -9,6 +9,7 @@ import { calculateNewPaidUntil } from '../lib/payments'
 import { validatePaymentForm } from '../lib/rules/payment'
 import { recordPayment } from '../lib/api/payments'
 import { messages } from '../lib/messages'
+import { useOnline } from '../hooks/useOnline'
 
 interface RecordPaymentModalProps {
   isOpen: boolean
@@ -37,18 +38,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState<boolean>(false)
   const [generalError, setGeneralError] = useState<string | null>(null)
-  const [isOffline, setIsOffline] = useState<boolean>(!navigator.onLine)
-
-  useEffect(() => {
-    const handleOnline = () => setIsOffline(false)
-    const handleOffline = () => setIsOffline(true)
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [])
+  const isOnline = useOnline()
+  const isOffline = !isOnline
 
   useEffect(() => {
     if (isOpen) {
@@ -58,7 +49,6 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       setPaymentDate(todaySAST())
       setErrors({})
       setGeneralError(null)
-      setIsOffline(!navigator.onLine)
     }
   }, [isOpen, member.plan_price])
 

@@ -47,6 +47,7 @@ export function Settings() {
 
   // Reminders state (Member only)
   const [remindersOn, setRemindersOn] = useState(true)
+  const userToggledRef = React.useRef(false)
 
   useEffect(() => {
     if (role === 'admin') {
@@ -60,7 +61,7 @@ export function Settings() {
     } else if (role === 'member') {
       getOwnMembership()
         ?.then((res) => {
-          if (res?.data) {
+          if (res?.data && !userToggledRef.current) {
             setRemindersOn(res.data.reminders_on)
           }
         })
@@ -69,6 +70,7 @@ export function Settings() {
   }, [role])
 
   async function handleToggleReminders(e: React.ChangeEvent<HTMLInputElement>) {
+    userToggledRef.current = true
     const on = e.target.checked
     setRemindersOn(on)
     const res = await setReminders(on)

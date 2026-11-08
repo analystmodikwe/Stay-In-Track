@@ -5,6 +5,7 @@ import { Toggle } from '../components/Toggle'
 import { Button } from '../components/Button'
 import { validatePlanName, validatePlanPrice, validatePlanBenefits } from '../lib/rules/plan'
 import { Plan } from '../lib/api/plans'
+import { useOnline } from '../hooks/useOnline'
 
 export interface PlanFormModalProps {
   isOpen: boolean
@@ -20,6 +21,7 @@ export interface PlanFormModalProps {
 
 export function PlanFormModal({ isOpen, plan, onClose, onSave }: PlanFormModalProps) {
   const isEdit = !!plan
+  const isOnline = useOnline()
 
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
@@ -155,6 +157,7 @@ export function PlanFormModal({ isOpen, plan, onClose, onSave }: PlanFormModalPr
               type="submit"
               variant="primary"
               loading={saving}
+              disabled={saving || !isOnline}
               className="w-full"
             >
               Save

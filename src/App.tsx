@@ -98,11 +98,7 @@ export default function App() {
       />
       <Route
         path="/forgot-password"
-        element={
-          isAdmin  ? <Navigate to="/dashboard" replace /> :
-          isMember ? <Navigate to="/home"      replace /> :
-          <ForgotPassword />
-        }
+        element={<ForgotPassword />}
       />
 
       {/* Privacy: open to all */}

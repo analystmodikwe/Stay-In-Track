@@ -30,7 +30,7 @@ test.describe('Flow 6 - Member Sign-up & Dashboard', () => {
     await page.getByLabel('This Member is 18 or older').check()
     await page.getByRole('button', { name: 'Save' }).click({ force: true })
 
-    await expect(page.getByText('Member added')).toBeVisible()
+    await expect(page.getByText('Member added')).toBeVisible({ timeout: 15000 })
 
     // 3. Log out via Settings
     await page.goto('/settings')

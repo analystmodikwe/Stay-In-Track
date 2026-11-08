@@ -13,17 +13,24 @@ import { Button } from '../components/Button'
 import { NoticeBanner } from '../components/NoticeBanner'
 import { OfflineBanner } from '../components/OfflineBanner'
 import { useOnline } from '../hooks/useOnline'
-import { sendPasswordReset, updatePassword } from '../lib/api/auth'
+import { sendPasswordReset, updatePassword, logOut } from '../lib/api/auth'
 import { validatePassword } from '../lib/rules/password'
 import { messages } from '../lib/messages'
+import { useRecoveryMode, clearRecoveryMode } from '../hooks/useRecoveryMode'
 
 interface Props {
   mode?: 'request' | 'reset'
 }
 
-export function ForgotPassword({ mode = 'request' }: Props) {
+export function ForgotPassword({ mode: propMode }: Props = {}) {
   const navigate = useNavigate()
   const isOnline = useOnline()
+
+  // useRecoveryMode subscribes to Supabase PASSWORD_RECOVERY at module load time,
+  // so the flag is captured even if the event fired before this component mounted.
+  const recoveryDetected = useRecoveryMode()
+
+  const mode = propMode || (recoveryDetected ? 'reset' : 'request')
 
   // --- Request mode ---
   const [email, setEmail] = useState('')
@@ -60,6 +67,8 @@ export function ForgotPassword({ mode = 'request' }: Props) {
     }
     // Show success banner then navigate to log-in
     setSuccessMsg(messages.passwordUpdated)
+    clearRecoveryMode()
+    await logOut()
     setTimeout(() => navigate('/log-in', { state: { passwordReset: true } }), 1500)
   }
 
